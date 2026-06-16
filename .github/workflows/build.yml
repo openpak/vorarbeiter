@@ -170,7 +170,7 @@ jobs:
             -e REPO \
             -e REF \
             -e TMPDIR=/work/tmp \
-            ghcr.io/flathub-infra/flatpak-builder-lint:unprivileged \
+            ghcr.io/openpak/flatpak-builder-lint:unprivileged \
             /bin/bash -c '
               git config --global --add safe.directory "*"
               just -f .openpak.justfile checkout $REPO $REF
@@ -187,7 +187,7 @@ jobs:
             -w /work \
             -e APP_ID \
             -e TMPDIR=/work/tmp \
-            ghcr.io/flathub-infra/flatpak-builder-lint:unprivileged \
+            ghcr.io/openpak/flatpak-builder-lint:unprivileged \
             just -f .openpak.justfile detect-appid /work
 
           APP_ID_FILE=${GITHUB_WORKSPACE}/work/app_id
@@ -220,7 +220,7 @@ jobs:
             -e XDG_STATE_HOME=/work/.local/state \
             -e REF \
             -e PR_TARGET_BRANCH \
-            ghcr.io/flathub-infra/flatpak-builder-lint:unprivileged \
+            ghcr.io/openpak/flatpak-builder-lint:unprivileged \
             just -f .openpak.justfile validate-manifest $APP_ID
 
       - name: Store end-of-life fields
@@ -467,7 +467,7 @@ jobs:
             -w /work \
             -e REPO \
             -e REF \
-            ghcr.io/flathub-infra/flatpak-builder-lint:unprivileged \
+            ghcr.io/openpak/flatpak-builder-lint:unprivileged \
             /bin/bash -c '
               git config --global --add safe.directory "*"
               just -f .openpak.justfile checkout $REPO $REF
@@ -484,7 +484,7 @@ jobs:
             -v "${GITHUB_WORKSPACE}/work:/work" \
             -w /work \
             -e APP_ID \
-            ghcr.io/flathub-infra/flatpak-builder-lint:unprivileged \
+            ghcr.io/openpak/flatpak-builder-lint:unprivileged \
             just -f .openpak.justfile detect-appid /work
 
           APP_ID_FILE=${GITHUB_WORKSPACE}/work/app_id
@@ -561,7 +561,7 @@ jobs:
             -w /work \
             -e APP_ID \
             -e BRANCH \
-            ghcr.io/flathub-infra/flatpak-builder-lint:unprivileged \
+            ghcr.io/openpak/flatpak-builder-lint:unprivileged \
             /bin/bash -c '
               just -f .openpak.justfile prepare-env || exit 1
               just -f .openpak.justfile download-sources $APP_ID || exit 1
@@ -582,7 +582,7 @@ jobs:
             -e APP_ID \
             -e REF \
             -e BUILD_ARCH \
-            ghcr.io/flathub-infra/flatpak-builder-lint:unprivileged \
+            ghcr.io/openpak/flatpak-builder-lint:unprivileged \
             /bin/bash -c '
               just -f .openpak.justfile prepare-env || exit 1
               just -f .openpak.justfile build $APP_ID $REF $BUILD_ARCH || exit 1
@@ -606,7 +606,7 @@ jobs:
             -e GITHUB_TOKEN \
             -e REF \
             -e PR_TARGET_BRANCH \
-            ghcr.io/flathub-infra/flatpak-builder-lint:unprivileged \
+            ghcr.io/openpak/flatpak-builder-lint:unprivileged \
             just -f .openpak.justfile validate-build
 
       - name: Upload build
@@ -619,7 +619,7 @@ jobs:
             -v "${GITHUB_WORKSPACE}/work:/work" \
             -w /work \
             -e REPO_TOKEN \
-            ghcr.io/flathub-infra/flatpak-builder-lint:unprivileged \
+            ghcr.io/openpak/flatpak-builder-lint:unprivileged \
             just -f .openpak.justfile upload $BUILD_URL
 
       - name: Upload build cache
