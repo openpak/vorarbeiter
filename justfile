@@ -114,7 +114,7 @@ validate-manifest app_id:
     #!/usr/bin/env bash
     set -euxo pipefail
     git config --global --add safe.directory "*"
-    manifest=$(just -f .flathub.justfile _get_manifest {{app_id}})
+    manifest=$(just -f .openpak.justfile _get_manifest {{app_id}})
 
     case "${REF}" in
         "refs/heads/beta")
@@ -141,7 +141,7 @@ download-sources app_id:
     #!/usr/bin/env bash
     set -euxo pipefail
 
-    manifest=$(just -f .flathub.justfile _get_manifest {{app_id}})
+    manifest=$(just -f .openpak.justfile _get_manifest {{app_id}})
 
     max_retries=5
     sleep_seconds=7
@@ -180,8 +180,8 @@ build app_id git_ref build_arch:
             ;;
     esac
 
-    manifest=$(just -f .flathub.justfile _get_manifest {{app_id}})
-    subject=$(just -f .flathub.justfile _get_build_subject)
+    manifest=$(just -f .openpak.justfile _get_manifest {{app_id}})
+    subject=$(just -f .openpak.justfile _get_build_subject)
 
     extra_args="--install-deps-from=flathub"
     if [ "$ref_branch" = "beta" ] || [ "$ref_branch" = "test" ]; then
@@ -279,5 +279,5 @@ show-runtime app_id:
     #!/usr/bin/env bash
     set -euxo pipefail
     git config --global --add safe.directory "*"
-    manifest=$(just -f .flathub.justfile _get_manifest {{app_id}})
+    manifest=$(just -f .openpak.justfile _get_manifest {{app_id}})
     flatpak-builder --show-manifest "$manifest" | jq -r '"\(.runtime)-\(."runtime-version")"'

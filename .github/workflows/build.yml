@@ -78,7 +78,7 @@ jobs:
           echo "APP_ID=${{ inputs.app_id }}" >> $GITHUB_ENV
           echo "BRANCH=${{ inputs.flat_manager_repo }}" >> $GITHUB_ENV
           # sync this env var name with linter
-          echo "REPO=https://github.com/flathub/${{ inputs.app_id }}" >> $GITHUB_ENV
+          echo "REPO=https://github.com/OpenPak/${{ inputs.app_id }}" >> $GITHUB_ENV
           echo "REF=${{ inputs.git_ref }}" >> $GITHUB_ENV
           echo "PR_TARGET_BRANCH=${{ inputs.pr_target_branch }}" >> $GITHUB_ENV
 
@@ -99,9 +99,9 @@ jobs:
           import sys
 
           http = urllib3.PoolManager()
-          base_url = "https://raw.githubusercontent.com/flathub-infra/vorarbeiter/refs/heads/main/"
+          base_url = "https://raw.githubusercontent.com/OpenPak/vorarbeiter/refs/heads/main/"
           files_to_download = {
-              f"{base_url}justfile": os.path.join(os.environ["GITHUB_WORKSPACE"], "work/.flathub.justfile"),
+              f"{base_url}justfile": os.path.join(os.environ["GITHUB_WORKSPACE"], "work/.openpak.justfile"),
               f"{base_url}flatpak.seccomp.json": os.path.join(os.environ["GITHUB_WORKSPACE"], "flatpak.seccomp.json")
           }
 
@@ -173,11 +173,11 @@ jobs:
             ghcr.io/flathub-infra/flatpak-builder-lint:unprivileged \
             /bin/bash -c '
               git config --global --add safe.directory "*"
-              just -f .flathub.justfile checkout $REPO $REF
+              just -f .openpak.justfile checkout $REPO $REF
             '
 
       - name: Detect app ID of the new submission
-        if: ${{ github.event.inputs.app_id == 'flathub' }}
+        if: ${{ github.event.inputs.app_id == 'openpak' }}
         run: |
           docker run --rm \
             --entrypoint="" \
@@ -188,7 +188,7 @@ jobs:
             -e APP_ID \
             -e TMPDIR=/work/tmp \
             ghcr.io/flathub-infra/flatpak-builder-lint:unprivileged \
-            just -f .flathub.justfile detect-appid /work
+            just -f .openpak.justfile detect-appid /work
 
           APP_ID_FILE=${GITHUB_WORKSPACE}/work/app_id
 
@@ -221,15 +221,15 @@ jobs:
             -e REF \
             -e PR_TARGET_BRANCH \
             ghcr.io/flathub-infra/flatpak-builder-lint:unprivileged \
-            just -f .flathub.justfile validate-manifest $APP_ID
+            just -f .openpak.justfile validate-manifest $APP_ID
 
       - name: Store end-of-life fields
         run: |
           cd "${GITHUB_WORKSPACE}/work"
 
-          if [[ -f "flathub.json" ]]; then
-            END_OF_LIFE=$(jq -r '.["end-of-life"] // empty' flathub.json 2>/dev/null)
-            END_OF_LIFE_REBASE=$(jq -r '.["end-of-life-rebase"] // empty' flathub.json 2>/dev/null)
+          if [[ -f "openpak.json" ]]; then
+            END_OF_LIFE=$(jq -r '.["end-of-life"] // empty' openpak.json 2>/dev/null)
+            END_OF_LIFE_REBASE=$(jq -r '.["end-of-life-rebase"] // empty' openpak.json 2>/dev/null)
 
             if [[ -n "$END_OF_LIFE" || -n "$END_OF_LIFE_REBASE" ]]; then
               CALLBACK_TOKEN="$(jq -r '.inputs.callback_token' $GITHUB_EVENT_PATH)"
@@ -263,7 +263,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          repository: flathub/${{ inputs.app_id }}
+          repository: OpenPak/${{ inputs.app_id }}
           fetch-depth: 1
           path: repo
           ref: ${{ inputs.git_ref }}
@@ -277,8 +277,8 @@ jobs:
           arches = ["x86_64", "aarch64"]
           build_type = "${{ inputs.build_type }}"
 
-          if os.path.exists("repo/flathub.json"):
-              with open("repo/flathub.json") as f:
+          if os.path.exists("repo/openpak.json"):
+              with open("repo/openpak.json") as f:
                   flathub_json = json.load(f)
 
               if "only-arches" in flathub_json:
@@ -340,7 +340,7 @@ jobs:
           echo "APP_ID=${{ inputs.app_id }}" >> $GITHUB_ENV
           echo "BRANCH=${{ inputs.flat_manager_repo }}" >> $GITHUB_ENV
           # sync this env var name with linter
-          echo "REPO=https://github.com/flathub/${{ inputs.app_id }}" >> $GITHUB_ENV
+          echo "REPO=https://github.com/OpenPak/${{ inputs.app_id }}" >> $GITHUB_ENV
           echo "REF=${{ inputs.git_ref }}" >> $GITHUB_ENV
           echo "PR_TARGET_BRANCH=${{ inputs.pr_target_branch }}" >> $GITHUB_ENV
           echo "BUILD_URL=${{ inputs.build_url }}" >> $GITHUB_ENV
@@ -396,9 +396,9 @@ jobs:
           import sys
 
           http = urllib3.PoolManager()
-          base_url = "https://raw.githubusercontent.com/flathub-infra/vorarbeiter/refs/heads/main/"
+          base_url = "https://raw.githubusercontent.com/OpenPak/vorarbeiter/refs/heads/main/"
           files_to_download = {
-              f"{base_url}justfile": os.path.join(os.environ["GITHUB_WORKSPACE"], "work/.flathub.justfile"),
+              f"{base_url}justfile": os.path.join(os.environ["GITHUB_WORKSPACE"], "work/.openpak.justfile"),
               f"{base_url}flatpak.seccomp.json": os.path.join(os.environ["GITHUB_WORKSPACE"], "flatpak.seccomp.json")
           }
 
@@ -470,11 +470,11 @@ jobs:
             ghcr.io/flathub-infra/flatpak-builder-lint:unprivileged \
             /bin/bash -c '
               git config --global --add safe.directory "*"
-              just -f .flathub.justfile checkout $REPO $REF
+              just -f .openpak.justfile checkout $REPO $REF
             '
 
       - name: Detect app ID of the new submission
-        if: ${{ github.event.inputs.app_id == 'flathub' }}
+        if: ${{ github.event.inputs.app_id == 'openpak' }}
         run: |
           docker run --rm \
             --security-opt apparmor=unconfined \
@@ -485,7 +485,7 @@ jobs:
             -w /work \
             -e APP_ID \
             ghcr.io/flathub-infra/flatpak-builder-lint:unprivileged \
-            just -f .flathub.justfile detect-appid /work
+            just -f .openpak.justfile detect-appid /work
 
           APP_ID_FILE=${GITHUB_WORKSPACE}/work/app_id
 
@@ -503,7 +503,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           app_id_lc=${APP_ID,,}
-          IMAGE="ghcr.io/flathub-infra/vorarbeiter/cache/flatpak-builder/${app_id_lc}/stable-${{ matrix.arch }}:latest"
+          IMAGE="ghcr.io/OpenPak/vorarbeiter/cache/flatpak-builder/${app_id_lc}/stable-${{ matrix.arch }}:latest"
           GH_PACKAGE="vorarbeiter/cache/flatpak-builder/${app_id_lc}/stable-${{ matrix.arch }}"
 
           SIZE_MAX=$((6 * 1024 * 1024 * 1024))
@@ -538,7 +538,7 @@ jobs:
             gh api --method DELETE \
               -H "Accept: application/vnd.github+json" \
               -H "X-GitHub-Api-Version: 2022-11-28" \
-              /orgs/flathub-infra/packages/container/"$GH_PACKAGE_ENC" > /dev/null 2>&1 || exit 0
+              /orgs/OpenPak/packages/container/"$GH_PACKAGE_ENC" > /dev/null 2>&1 || exit 0
           fi
 
       - name: Fetch build cache
@@ -546,7 +546,7 @@ jobs:
         run: |
           app_id_lc=${APP_ID,,}
           cd "${GITHUB_WORKSPACE}/work"
-          oras pull ghcr.io/flathub-infra/vorarbeiter/cache/flatpak-builder/${app_id_lc}/stable-${{ matrix.arch }}:latest || exit 0
+          oras pull ghcr.io/OpenPak/vorarbeiter/cache/flatpak-builder/${app_id_lc}/stable-${{ matrix.arch }}:latest || exit 0
 
       - name: Download sources
         run: |
@@ -563,8 +563,8 @@ jobs:
             -e BRANCH \
             ghcr.io/flathub-infra/flatpak-builder-lint:unprivileged \
             /bin/bash -c '
-              just -f .flathub.justfile prepare-env || exit 1
-              just -f .flathub.justfile download-sources $APP_ID || exit 1
+              just -f .openpak.justfile prepare-env || exit 1
+              just -f .openpak.justfile download-sources $APP_ID || exit 1
             '
 
       - name: Build
@@ -584,9 +584,9 @@ jobs:
             -e BUILD_ARCH \
             ghcr.io/flathub-infra/flatpak-builder-lint:unprivileged \
             /bin/bash -c '
-              just -f .flathub.justfile prepare-env || exit 1
-              just -f .flathub.justfile build $APP_ID $REF $BUILD_ARCH || exit 1
-              just -f .flathub.justfile install-if-extra-data $APP_ID $REF || exit 1
+              just -f .openpak.justfile prepare-env || exit 1
+              just -f .openpak.justfile build $APP_ID $REF $BUILD_ARCH || exit 1
+              just -f .openpak.justfile install-if-extra-data $APP_ID $REF || exit 1
             '
 
       - name: Validate build
@@ -607,7 +607,7 @@ jobs:
             -e REF \
             -e PR_TARGET_BRANCH \
             ghcr.io/flathub-infra/flatpak-builder-lint:unprivileged \
-            just -f .flathub.justfile validate-build
+            just -f .openpak.justfile validate-build
 
       - name: Upload build
         run: |
@@ -620,7 +620,7 @@ jobs:
             -w /work \
             -e REPO_TOKEN \
             ghcr.io/flathub-infra/flatpak-builder-lint:unprivileged \
-            just -f .flathub.justfile upload $BUILD_URL
+            just -f .openpak.justfile upload $BUILD_URL
 
       - name: Upload build cache
         if: ${{ inputs.flat_manager_repo == 'stable' && inputs.git_ref == 'refs/heads/master' }}
@@ -643,7 +643,7 @@ jobs:
 
           app_id_lc=${APP_ID,,}
           oras login ghcr.io --password "${{ secrets.GITHUB_TOKEN }}" -u "${{ github.actor }}" || exit 0
-          oras push ghcr.io/flathub-infra/vorarbeiter/cache/flatpak-builder/${app_id_lc}/stable-${{ matrix.arch }}:latest .flatpak-builder || exit 0
+          oras push ghcr.io/OpenPak/vorarbeiter/cache/flatpak-builder/${app_id_lc}/stable-${{ matrix.arch }}:latest .flatpak-builder || exit 0
 
       - name: List files in build directory
         if: always()

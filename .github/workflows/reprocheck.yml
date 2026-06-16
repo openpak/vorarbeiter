@@ -88,7 +88,7 @@ jobs:
 
       - name: Download seccomp profile
         run: |
-          curl -s https://raw.githubusercontent.com/flathub-infra/vorarbeiter/refs/heads/main/flatpak.seccomp.json -o flatpak.seccomp.json
+          curl -s https://raw.githubusercontent.com/OpenPak/vorarbeiter/refs/heads/main/flatpak.seccomp.json -o flatpak.seccomp.json
 
       - name: Run reprocheck
         continue-on-error: true

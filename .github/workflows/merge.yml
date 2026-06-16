@@ -1,5 +1,5 @@
 name: Merge submission
-run-name: merge PR to flathub/${{ inputs.appid }}@${{ inputs.target_branch }}
+run-name: merge PR to OpenPak/${{ inputs.appid }}@${{ inputs.target_branch }}
 
 on:
   workflow_dispatch:
@@ -11,14 +11,14 @@ on:
         description: '40-char commit SHA to push'
         required: true
       appid:
-        description: 'Flatpak app ID (becomes flathub/<appid>)'
+        description: 'Flatpak app ID (becomes OpenPak/<appid>)'
         required: true
       target_branch:
-        description: 'Target branch on flathub/<appid> (master, beta, branch/*)'
+        description: 'Target branch on OpenPak/<appid> (master, beta, branch/*)'
         required: true
         default: 'master'
       flathubbot_token:
-        description: 'flathubbot token (push to flathub/<appid>)'
+        description: 'flathubbot token (push to OpenPak/<appid>)'
         required: true
       callback_url:
         description: 'Vorarbeiter callback URL'
@@ -50,7 +50,7 @@ jobs:
           fetched_sha=$(git rev-parse FETCH_HEAD)
           [ "$fetched_sha" = "$EXPECTED_SHA" ] || exit 1
 
-      - name: Push to flathub/${{ inputs.appid }}
+      - name: Push to OpenPak/${{ inputs.appid }}
         env:
           APPID: ${{ inputs.appid }}
           TARGET_BRANCH: ${{ inputs.target_branch }}
@@ -62,7 +62,7 @@ jobs:
           AUTH_B64="$(printf 'x-access-token:%s' "$FLATHUBBOT_TOKEN" | base64 -w0)"
           echo "::add-mask::$AUTH_B64"
           git -c http.extraheader="Authorization: Basic $AUTH_B64" \
-              push "https://github.com/flathub/$APPID.git" \
+              push "https://github.com/OpenPak/$APPID.git" \
               "FETCH_HEAD:refs/heads/$TARGET_BRANCH"
 
       - name: Report status to vorarbeiter
