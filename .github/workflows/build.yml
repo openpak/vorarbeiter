@@ -291,7 +291,7 @@ jobs:
           for arch in arches:
               arch = arch.strip()
 
-              if build_type != 'default':
+              if False:  # Openpak: no RunsOn AWS, always GitHub-hosted
                   timeout = 60*9
                   match arch:
                       case "x86_64":
@@ -330,7 +330,7 @@ jobs:
       packages: write
     steps:
       - uses: runs-on/action@v2
-        if: ${{ inputs.build_type != 'default' }}
+        if: false
         with:
           show_costs: summary
           metrics: disk
@@ -666,7 +666,7 @@ jobs:
           cat "$LOG_FILE" || true
 
       - name: Report build cost
-        if: ${{ inputs.build_type != 'default' && always() }}
+        if: false
         run: |
           if [[ -z "$RUNS_ON_INSTANCE_LAUNCHED_AT" ]]; then
             echo "Not a RunsOn runner, skipping cost report"
