@@ -480,7 +480,7 @@ class BuildPipeline:
                 "app_id": pipeline.app_id,
                 "job_type": "build",
                 "params": {
-                    "owner": "flathub-infra",
+                    "owner": "OpenPak",
                     "repo": "vorarbeiter",
                     "workflow_id": workflow_id,
                     "ref": "main",
@@ -567,7 +567,7 @@ class BuildPipeline:
 
             updates: dict[str, Any] = {}
 
-            if pipeline.app_id == "flathub" and parsed_data.app_id:
+            if pipeline.app_id == "openpak" and parsed_data.app_id:
                 pipeline.app_id = parsed_data.app_id
                 updates["app_id"] = pipeline.app_id
 
@@ -997,7 +997,7 @@ class BuildPipeline:
         try:
             reprocheck_params = {
                 "build_pipeline_id": str(pipeline.id),
-                "owner": "flathub-infra",
+                "owner": "OpenPak",
                 "repo": "vorarbeiter",
                 "workflow_id": "reprocheck.yml",
                 "ref": "main",

@@ -30,8 +30,8 @@ from app.utils.manifest import detect_appid_from_github
 
 logger = structlog.get_logger(__name__)
 
-FLATHUB_REPO = "flathub/flathub"
-MERGE_WORKFLOW_REPO = "flathub-infra/vorarbeiter"
+FLATHUB_REPO = "OpenPak/openpak"
+MERGE_WORKFLOW_REPO = "OpenPak/vorarbeiter"
 MERGE_ERROR_REPO_CREATE_FAILED = "Failed to create repository"
 MERGE_ERROR_WORKFLOW_DISPATCH_FAILED = "Failed to dispatch merge workflow"
 MERGE_ERROR_GIT_PUSH_FAILED = "Git push workflow failed"
@@ -47,17 +47,17 @@ PROTECTED_BRANCH_PATTERNS = (
 
 CLOSE_COMMENT_TEMPLATE = (
     "A repository for this submission has been created: {repo_url} "
-    "and it will be published to Flathub within a few hours.\n"
+    "and it will be published to Openpak within a few hours.\n"
     "You will receive an [invite]({repo_url}/invitations) "
     "to be a collaborator on the repository. Please make sure to enable "
     "2FA on GitHub and accept the invite within a week.\n"
     "Please go through the [App maintenance guide]"
-    "(https://docs.flathub.org/docs/for-app-authors/maintenance) "
-    "if you have never maintained an app on Flathub before.\n"
+    "(https://docs.openpak.org/docs/for-app-authors/maintenance) "
+    "if you have never maintained an app on Openpak before.\n"
     "If you are the original developer (or an authorized party), please "
-    "[verify your app](https://docs.flathub.org/docs/for-app-authors/verification) "
+    "[verify your app](https://docs.openpak.org/docs/for-app-authors/verification) "
     "to let users know it's coming from you.\n"
-    "Please follow the [Flathub blog](https://docs.flathub.org/blog) for the latest "
+    "Please follow the [Openpak blog](https://docs.openpak.org/blog) for the latest "
     "announcements.\n"
     "Thanks!"
 )
@@ -65,7 +65,7 @@ CLOSE_COMMENT_TEMPLATE = (
 GQL_GET_REPO_ID = gql(
     """
     query get_repo_id($repo: String!) {
-        repository(name: $repo, owner: "flathub") {
+        repository(name: $repo, owner: "openpak") {
             id
         }
     }
@@ -252,7 +252,7 @@ class MergeService:
             if not retry_repo_url:
                 await self._post_comment(
                     pr_number,
-                    f"❌ Repository `flathub/{appid}` already exists.",
+                    f"❌ Repository `OpenPak/{appid}` already exists.",
                 )
                 return
 
@@ -292,7 +292,7 @@ class MergeService:
                     MERGE_ERROR_REPO_CREATE_FAILED,
                 )
                 await self._post_comment(
-                    pr_number, f"❌ Failed to create repository `flathub/{appid}`."
+                    pr_number, f"❌ Failed to create repository `OpenPak/{appid}`."
                 )
                 return
 
@@ -416,8 +416,8 @@ class MergeService:
         logger.info("Finalizing merge", merge_id=str(merge_id), appid=appid)
 
         try:
-            if not await self._remove_collaborator(appid, "flathubbot"):
-                errors.append("Failed to remove flathubbot from collaborators")
+            if not await self._remove_collaborator(appid, "openpak-bot"):
+                errors.append("Failed to remove openpak-bot from collaborators")
 
             if not await self._set_all_branch_protections(
                 appid, PROTECTED_BRANCH_PATTERNS
@@ -444,7 +444,7 @@ class MergeService:
                 if not await self._clear_pr_metadata(pr_number, ctx.pr_metadata):
                     errors.append("Failed to clear PR assignees/reviewers")
 
-            repo_url = ctx.repo_html_url or f"https://github.com/flathub/{appid}"
+            repo_url = ctx.repo_html_url or f"https://github.com/OpenPak/{appid}"
             if not await self._close_and_lock_pr(pr_number, repo_url):
                 errors.append("Failed to close/lock PR")
 
@@ -498,7 +498,7 @@ class MergeService:
         for team in ("admins", "reviewers"):
             response = await client.request(
                 "get",
-                f"https://api.github.com/orgs/flathub/teams/{team}/memberships/{username}",
+                f"https://api.github.com/orgs/OpenPak/teams/{team}/memberships/{username}",
                 context={"team": team, "username": username},
                 raise_for_status=False,
             )
@@ -544,7 +544,7 @@ class MergeService:
         client = get_github_client()
         response = await client.request(
             "get",
-            f"https://api.github.com/repos/flathub/{appid}",
+            f"https://api.github.com/repos/OpenPak/{appid}",
             context={"appid": appid},
             raise_for_status=False,
         )
@@ -581,18 +581,18 @@ class MergeService:
         ):
             return None
 
-        return latest_request.repo_html_url or f"https://github.com/flathub/{appid}"
+        return latest_request.repo_html_url or f"https://github.com/OpenPak/{appid}"
 
     async def _create_repo(self, appid: str) -> str | None:
         client = get_github_client()
 
         response = await client.request(
             "post",
-            "https://api.github.com/orgs/flathub/repos",
+            "https://api.github.com/orgs/OpenPak/repos",
             content=json.dumps(
                 {
                     "name": appid,
-                    "homepage": f"https://flathub.org/apps/details/{appid}",
+                    "homepage": f"https://openpak.org/apps/details/{appid}",
                     "delete_branch_on_merge": True,
                 }
             ),
@@ -693,7 +693,7 @@ class MergeService:
 
         users = []
         for collab in collaborators:
-            if collab.startswith("flathub/"):
+            if collab.startswith("openpak/"):
                 teams_to_add.append(collab.split("/", 1)[1])
             else:
                 users.append(collab)
@@ -703,7 +703,7 @@ class MergeService:
             logger.info("Adding user collaborator", appid=appid, user=user)
             response = await client.request(
                 "put",
-                f"https://api.github.com/repos/flathub/{appid}/collaborators/{user}",
+                f"https://api.github.com/repos/OpenPak/{appid}/collaborators/{user}",
                 content=json.dumps({"permission": "push"}),
                 context={"appid": appid, "user": user},
                 raise_for_status=False,
@@ -716,7 +716,7 @@ class MergeService:
             logger.info("Adding team collaborator", appid=appid, team=team)
             response = await client.request(
                 "put",
-                f"https://api.github.com/orgs/flathub/teams/{team}/repos/flathub/{appid}",
+                f"https://api.github.com/orgs/OpenPak/teams/{team}/repos/OpenPak/{appid}",
                 content=json.dumps({"permission": "push"}),
                 context={"appid": appid, "team": team},
                 raise_for_status=False,
@@ -731,7 +731,7 @@ class MergeService:
         client = get_github_client()
         response = await client.request(
             "delete",
-            f"https://api.github.com/repos/flathub/{appid}/collaborators/{username}",
+            f"https://api.github.com/repos/OpenPak/{appid}/collaborators/{username}",
             context={"appid": appid, "username": username},
             raise_for_status=False,
         )
@@ -743,7 +743,7 @@ class MergeService:
         client = get_github_client()
         response = await client.request(
             "get",
-            f"https://api.github.com/repos/flathub/{appid}/branches/{branch}",
+            f"https://api.github.com/repos/OpenPak/{appid}/branches/{branch}",
             context={"appid": appid, "branch": branch},
             raise_for_status=False,
         )

@@ -173,8 +173,8 @@ class GitHubNotifier:
                 "- <code>bot, build</code> - Restart the test build\n"
             )
 
-            if git_repo != "flathub/flathub" and settings.ff_admin_ping_comment:
-                footnote += "- <code>bot, ping admins</code> - Contact Flathub admins\n"
+            if git_repo != "OpenPak/openpak" and settings.ff_admin_ping_comment:
+                footnote += "- <code>bot, ping admins</code> - Contact Openpak admins\n"
 
             footnote += "</details>"
 
@@ -236,7 +236,7 @@ class GitHubNotifier:
                 status = "failure"
                 comment = (
                     f"❌ {f'The [commit job]({settings.flat_manager_url}/status/{pipeline.commit_job_id}) failed.' if pipeline.commit_job_id else 'The commit job failed.'} "
-                    f"This may indicate [an infrastructure issue](https://status.flathub.org).\n\n"
+                    f"This may indicate [an infrastructure issue](https://status.openpak.org).\n\n"
                     f"{footnote}\n\n"
                     "cc @barthalion"
                 )
@@ -295,7 +295,7 @@ class GitHubNotifier:
                     "by commenting `bot, retry` in this issue."
                 )
 
-            body += "\n\ncc @flathub/build-moderation"
+            body += "\n\ncc @openpak/build-moderation"
 
             result = await create_github_issue(
                 git_repo=git_repo,
@@ -353,10 +353,10 @@ class GitHubNotifier:
             if extra_sections:
                 body += f"\n{extra_sections}"
 
-            body += "\ncc @flathub/build-moderation"
+            body += "\ncc @openpak/build-moderation"
             body += (
-                "\n\nThis issue is being opened for tracking by Flathub admins and may indicate "
-                "an [infrastructure problem](https://status.flathub.org). Please do not close or modify this until "
+                "\n\nThis issue is being opened for tracking by Openpak admins and may indicate "
+                "an [infrastructure problem](https://status.openpak.org). Please do not close or modify this until "
                 "an admin has responded.\n"
             )
 

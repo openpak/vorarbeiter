@@ -123,7 +123,7 @@ async def get_recent_pipelines(
                     Pipeline.params["workflow_id"].is_(None),
                 )
             )
-            .where(Pipeline.app_id != "flathub")
+            .where(Pipeline.app_id != "openpak")
             .order_by(
                 case(
                     (

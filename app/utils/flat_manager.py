@@ -159,7 +159,7 @@ class FlatManagerClient:
         return f"{self.url}/api/v1/build/{build_id}"
 
     def get_flatpakref_url(self, build_id: int, app_id: str) -> str:
-        return f"https://dl.flathub.org/build-repo/{build_id}/{app_id}.flatpakref"
+        return f"https://dl.openpak.org/build-repo/{build_id}/{app_id}.flatpakref"
 
     async def commit(
         self,

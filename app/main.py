@@ -38,7 +38,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 origins = [
-    "https://flathub.org",
+    "https://openpak.org",
 ]
 app.add_middleware(
     CORSMiddleware,

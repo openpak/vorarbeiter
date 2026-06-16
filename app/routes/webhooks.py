@@ -37,14 +37,14 @@ webhooks_router = APIRouter(prefix="/api/webhooks", tags=["webhooks"])
 STABLE_BUILD_FAILURE_PATTERN = re.compile(
     r"The stable build pipeline for `.+?` failed\.\s*\n"
     r"Commit SHA: ([0-9a-fA-F]+)\s*\n"
-    r"Build log: (https://github\.com/flathub-infra/vorarbeiter/actions/runs/\d+)"
+    r"Build log: (https://github\.com/OpenPak/vorarbeiter/actions/runs/\d+)"
 )
 VALIDATION_FAILURE_PATTERN = re.compile(
     r"The build for `.+?` failed validation during publication in the (\w+) repository\.\s*\n\n"
     r"\*\*Build Information:\*\*\s*\n"
     r"- Commit SHA: ([0-9a-fA-F]+)\s*\n"
     r"(?:- Build ID: \d+\s*\n)?"
-    r"- Build log: (https://github\.com/flathub-infra/vorarbeiter/actions/runs/\d+)",
+    r"- Build log: (https://github\.com/OpenPak/vorarbeiter/actions/runs/\d+)",
     re.DOTALL,
 )
 JOB_FAILURE_PATTERN = re.compile(
@@ -325,7 +325,7 @@ def should_store_event(payload: dict) -> bool:
         comment_author = payload.get("comment", {}).get("user", {}).get("login")
 
         if comment_author in ("github-actions[bot]",) and repo_full_name not in (
-            "flathub/flathub",
+            "OpenPak/openpak",
         ):
             return False
 
@@ -373,7 +373,7 @@ async def fetch_flathub_json(
     repo: str,
     ref: str,
 ) -> dict[str, Any] | None:
-    url = f"https://api.github.com/repos/{repo}/contents/flathub.json?ref={ref}"
+    url = f"https://api.github.com/repos/{repo}/contents/openpak.json?ref={ref}"
     client = get_github_client()
 
     try:
@@ -391,17 +391,17 @@ async def fetch_flathub_json(
         response.raise_for_status()
         data = response.json()
         if not isinstance(data, dict):
-            logger.warning("flathub.json is not a JSON object", repo=repo, ref=ref)
+            logger.warning("openpak.json is not a JSON object", repo=repo, ref=ref)
             return {}
         return data
     except json.JSONDecodeError as err:
         logger.warning(
-            "Failed to decode flathub.json", error=str(err), repo=repo, ref=ref
+            "Failed to decode openpak.json", error=str(err), repo=repo, ref=ref
         )
         return None
     except (httpx.HTTPError, ValueError) as err:
         logger.error(
-            "Error fetching flathub.json from GitHub",
+            "Error fetching openpak.json from GitHub",
             error=str(err),
             repo=repo,
             ref=ref,
@@ -506,7 +506,7 @@ async def is_eol_only_pr(
         return False, None
 
     file_info = files[0]
-    if file_info.get("filename") != "flathub.json":
+    if file_info.get("filename") != "openpak.json":
         return False, None
 
     return await check_eol_only_change(repo, base_ref, head_ref)
@@ -548,7 +548,7 @@ async def is_eol_only_push(
         return False, None
 
     file_info = files[0]
-    if file_info.get("filename") != "flathub.json":
+    if file_info.get("filename") != "openpak.json":
         return False, None
 
     return await check_eol_only_change(repo, before, after)
@@ -593,7 +593,7 @@ async def handle_eol_only_pr(
     end_of_life_rebase = eol_data.get("end_of_life_rebase") if eol_data else None
 
     comment = (
-        "EOL-only change detected in `flathub.json`; build skipped.\n\n"
+        "EOL-only change detected in `openpak.json`; build skipped.\n\n"
         "Detected values:\n"
         f"- end-of-life: `{format_value(end_of_life)}`\n"
         f"- end-of-life-rebase: `{format_value(end_of_life_rebase)}`\n\n"
@@ -812,9 +812,9 @@ async def receive_github_webhook(
         )
 
     ignored_repos = [
-        "flathub/flathub",
-        "flathub/org.freedesktop.Platform.GL.nvidia",
-        "flathub/shared-modules",
+        "OpenPak/openpak",
+        "OpenPak/org.freedesktop.Platform.GL.nvidia",
+        "OpenPak/shared-modules",
     ]
     is_pr_event = "pull_request" in payload and payload.get("action") in [
         "opened",
@@ -824,7 +824,7 @@ async def receive_github_webhook(
     is_push_event = "commits" in payload and payload.get("ref", "")
 
     if (
-        repo_name == "flathub/flathub"
+        repo_name == "OpenPak/openpak"
         and payload.get("action") == "created"
         and payload.get("issue", {}).get("pull_request")
         and "comment" in payload
@@ -1000,7 +1000,7 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
         pr_url = issue.get("pull_request", {}).get("url", "")
         repo = event.repository
 
-        if "bot, ping admins" in comment_body and repo not in ("flathub/flathub",):
+        if "bot, ping admins" in comment_body and repo not in ("OpenPak/openpak",):
             if issue_number is None:
                 logger.error(
                     "Missing issue number for admin ping",
@@ -1015,7 +1015,7 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
                     await add_issue_comment(
                         git_repo=repo,
                         issue_number=issue_number,
-                        comment="Contacted Flathub admins: cc @flathub/build-moderation",
+                        comment="Contacted Openpak admins: cc @openpak/build-moderation",
                         check_duplicates=True,
                     )
                 else:
@@ -1186,7 +1186,7 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
                 )
                 return None
 
-            if issue_author != "flathubbot":
+            if issue_author != "openpak-bot":
                 logger.info(
                     "Retry comment on issue not created by flathubbot, ignoring",
                     issue_author=issue_author,
@@ -1269,7 +1269,7 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
             comment = (
                 "🚧 Test build queued — waiting for capacity."
                 if should_queue_test_build
-                else "🚧 Test build [enqueued](https://github.com/flathub-infra/vorarbeiter/actions/workflows/build.yml)."
+                else "🚧 Test build [enqueued](https://github.com/OpenPak/vorarbeiter/actions/workflows/build.yml)."
             )
             await create_pr_comment(
                 git_repo=git_repo,

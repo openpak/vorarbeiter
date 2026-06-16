@@ -11,8 +11,8 @@ class MergeCommand:
 
 _COMMAND_PATTERN = re.compile(r"^/merge(?::([\w.-]+))? head=([a-fA-F0-9]{40})(.*)$")
 
-_USERNAME_PATTERN = re.compile(r"@(?!flathub/)[a-zA-Z0-9-]{1,39}")
-_TEAM_PATTERN = re.compile(r"@flathub/[a-zA-Z0-9-]{1,39}")
+_USERNAME_PATTERN = re.compile(r"@(?!openpak/)[a-zA-Z0-9-]{1,39}")
+_TEAM_PATTERN = re.compile(r"@openpak/[a-zA-Z0-9-]{1,39}")
 
 
 def parse_merge_command(comment: str) -> MergeCommand | None:
