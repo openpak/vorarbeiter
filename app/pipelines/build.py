@@ -93,14 +93,8 @@ async def get_app_p90_build_time(db: AsyncSession, app_id: str) -> float | None:
 
 
 async def determine_build_type(db: AsyncSession, app_id: str) -> str:
-    if app_id in app_build_types:
-        return app_build_types[app_id]
-
-    p90 = await get_app_p90_build_time(db, app_id)
-    if p90 is not None and p90 <= FAST_BUILD_P90_THRESHOLD_MINUTES:
-        return "default"
-
-    return "medium"
+    # Openpak has no RunsOn AWS spot fleet — always GitHub-hosted runners.
+    return "default"
 
 
 async def _validate_and_prepare_callback(
