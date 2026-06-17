@@ -22,7 +22,7 @@ import app.utils.github as github_module
 def override_settings():
     with (
         patch.object(settings, "database_url", "sqlite+aiosqlite:///:memory:"),
-        patch.object(settings, "flat_manager_url", "https://hub.flathub.org"),
+        patch.object(settings, "flat_manager_url", "https://hub.openpak.org"),
         patch.object(settings, "flat_manager_token", "test_flat_manager_token"),
     ):
         yield

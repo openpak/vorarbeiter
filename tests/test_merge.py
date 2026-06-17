@@ -84,9 +84,9 @@ class TestParseMergeCommand:
 
     def test_merge_with_team_collaborators(self):
         sha = "e" * 40
-        cmd = parse_merge_command(f"/merge head={sha} @flathub/KDE @user1")
+        cmd = parse_merge_command(f"/merge head={sha} @openpak/KDE @user1")
         assert cmd is not None
-        assert "flathub/KDE" in cmd.additional_collaborators
+        assert "openpak/KDE" in cmd.additional_collaborators
         assert "user1" in cmd.additional_collaborators
 
     def test_not_merge_command(self):
@@ -365,8 +365,8 @@ class TestMergeServiceCollaborators:
                 [
                     "user1",
                     "user1",
-                    "flathub/KDE",
-                    "flathub/trusted-maintainers",
+                    "openpak/KDE",
+                    "openpak/trusted-maintainers",
                 ],
             )
             assert result is True
@@ -374,19 +374,19 @@ class TestMergeServiceCollaborators:
             urls = [call.args[1] for call in mock_client.request.call_args_list]
             assert (
                 urls.count(
-                    "https://api.github.com/repos/flathub/org.kde.Dolphin/collaborators/user1"
+                    "https://api.github.com/repos/OpenPak/org.kde.Dolphin/collaborators/user1"
                 )
                 == 1
             )
             assert (
                 urls.count(
-                    "https://api.github.com/orgs/flathub/teams/KDE/repos/flathub/org.kde.Dolphin"
+                    "https://api.github.com/orgs/OpenPak/teams/KDE/repos/OpenPak/org.kde.Dolphin"
                 )
                 == 1
             )
             assert (
                 urls.count(
-                    "https://api.github.com/orgs/flathub/teams/trusted-maintainers/repos/flathub/org.kde.Dolphin"
+                    "https://api.github.com/orgs/OpenPak/teams/trusted-maintainers/repos/OpenPak/org.kde.Dolphin"
                 )
                 == 1
             )
@@ -461,7 +461,7 @@ class TestMergeServiceCollaborators:
 
         with patch("app.services.merge.get_github_client", return_value=mock_client):
             result = await service._add_collaborators(
-                "com.example.App", ["user1", "flathub/custom-team"]
+                "com.example.App", ["user1", "openpak/custom-team"]
             )
             assert result is True
 
@@ -482,7 +482,7 @@ class TestMergeServiceLabelsAndMetadata:
 
         assert result is True
         mock_set_labels.assert_called_once_with(
-            "flathub/flathub", 123, ["ready"], replace=False
+            "OpenPak/openpak", 123, ["ready"], replace=False
         )
 
     @pytest.mark.asyncio
@@ -496,7 +496,7 @@ class TestMergeServiceLabelsAndMetadata:
 
         assert result is True
         mock_set_labels.assert_called_once_with(
-            "flathub/flathub", 123, ["ready"], replace=True
+            "OpenPak/openpak", 123, ["ready"], replace=True
         )
 
     @pytest.mark.asyncio
@@ -545,7 +545,7 @@ class TestMergeServiceCloseAndLock:
 
         with patch("app.services.merge.get_github_client", return_value=mock_client):
             result = await service._close_and_lock_pr(
-                123, "https://github.com/flathub/org.example.App"
+                123, "https://github.com/OpenPak/org.example.App"
             )
 
         assert result is True
@@ -580,7 +580,7 @@ class TestMergeServiceCloseAndLock:
 
         with patch("app.services.merge.get_github_client", return_value=mock_client):
             result = await service._close_and_lock_pr(
-                123, "https://github.com/flathub/org.example.App"
+                123, "https://github.com/OpenPak/org.example.App"
             )
 
         assert result is True
@@ -602,7 +602,7 @@ class TestMergeServiceProcess:
                 assert mr is not None
                 assert mr.status == MergeStatus.PUSHING
                 assert mr.repo_html_url is None
-            return f"https://github.com/flathub/{appid}"
+            return f"https://github.com/OpenPak/{appid}"
 
         with (
             patch("app.services.merge.get_db", side_effect=lambda: mock_get_db()),
@@ -646,7 +646,7 @@ class TestMergeServiceProcess:
                 mr = await session.get(MergeRequest, merge_id)
                 assert mr is not None
                 assert mr.status == MergeStatus.PUSHING
-                assert mr.repo_html_url == "https://github.com/flathub/org.example.App"
+                assert mr.repo_html_url == "https://github.com/OpenPak/org.example.App"
             assert merge_request.status == MergeStatus.PUSHING
 
         with (
@@ -671,7 +671,7 @@ class TestMergeServiceProcess:
                 service,
                 "_create_repo",
                 new=AsyncMock(
-                    return_value="https://github.com/flathub/org.example.App"
+                    return_value="https://github.com/OpenPak/org.example.App"
                 ),
             ),
             patch.object(
@@ -732,7 +732,7 @@ class TestMergeServiceProcess:
 
         mock_comment.assert_called_once_with(
             123,
-            "❌ Failed to create repository `flathub/org.example.App`.",
+            "❌ Failed to create repository `OpenPak/org.example.App`.",
         )
 
     @pytest.mark.asyncio
@@ -764,7 +764,7 @@ class TestMergeServiceProcess:
                 service,
                 "_create_repo",
                 new=AsyncMock(
-                    return_value="https://github.com/flathub/org.example.App"
+                    return_value="https://github.com/OpenPak/org.example.App"
                 ),
             ),
             patch.object(
@@ -787,7 +787,7 @@ class TestMergeServiceProcess:
             assert mr.status == MergeStatus.FAILED
             assert mr.error == MERGE_ERROR_WORKFLOW_DISPATCH_FAILED
             assert mr.completed_at is not None
-            assert mr.repo_html_url == "https://github.com/flathub/org.example.App"
+            assert mr.repo_html_url == "https://github.com/OpenPak/org.example.App"
 
         mock_comment.assert_called_once_with(
             123,
@@ -816,7 +816,7 @@ class TestMergeServiceProcess:
                     comment_author="reviewer",
                     fork_url="https://github.com/user/repo.git",
                     fork_branch="main",
-                    repo_html_url="https://github.com/flathub/org.example.App",
+                    repo_html_url="https://github.com/OpenPak/org.example.App",
                     error=MERGE_ERROR_WORKFLOW_DISPATCH_FAILED,
                 )
             )
@@ -868,7 +868,7 @@ class TestMergeServiceProcess:
             retry_row = next(row for row in rows if row.id == retry_merge_id)
             assert retry_row.status == MergeStatus.PUSHING
             assert (
-                retry_row.repo_html_url == "https://github.com/flathub/org.example.App"
+                retry_row.repo_html_url == "https://github.com/OpenPak/org.example.App"
             )
 
     @pytest.mark.asyncio
@@ -1000,7 +1000,7 @@ class TestMergeServiceFinalize:
             target_branch="master",
             pr_head_sha="a" * 40,
             collaborators=["author1"],
-            repo_html_url="https://github.com/flathub/org.example.App",
+            repo_html_url="https://github.com/OpenPak/org.example.App",
             pr_metadata=_PrMetadata(
                 labels=[],
                 assignees=[],
@@ -1025,7 +1025,7 @@ class TestMergeServiceFinalize:
                     comment_author="reviewer",
                     fork_url="https://github.com/user/repo.git",
                     fork_branch="main",
-                    repo_html_url="https://github.com/flathub/org.example.App",
+                    repo_html_url="https://github.com/OpenPak/org.example.App",
                 )
             )
             await session.commit()
@@ -1067,7 +1067,7 @@ class TestMergeServiceFinalize:
             await service._finalize(self._make_ctx(merge_id))
 
         mock_close.assert_called_once_with(
-            123, "https://github.com/flathub/org.example.App"
+            123, "https://github.com/OpenPak/org.example.App"
         )
         mock_comment.assert_not_called()
 
@@ -1116,7 +1116,7 @@ class TestMergeServiceFinalize:
             await service._finalize(self._make_ctx(merge_id))
 
         mock_close.assert_called_once_with(
-            123, "https://github.com/flathub/org.example.App"
+            123, "https://github.com/OpenPak/org.example.App"
         )
         mock_comment.assert_called_once()
         body = mock_comment.call_args.args[1]
@@ -1151,7 +1151,7 @@ class TestMergeCallback:
                 comment_author="reviewer",
                 fork_url="https://github.com/user/repo.git",
                 fork_branch="main",
-                repo_html_url="https://github.com/flathub/org.example.App",
+                repo_html_url="https://github.com/OpenPak/org.example.App",
             )
             session.add(mr)
             await session.commit()

@@ -121,7 +121,7 @@ SAMPLE_GITHUB_ACTIONS_BOT_PAYLOAD = {
 }
 
 SAMPLE_GITHUB_ACTIONS_BOT_FLATHUB_PAYLOAD = {
-    "repository": {"full_name": "flathub/flathub"},
+    "repository": {"full_name": "OpenPak/openpak"},
     "sender": {"login": "github-actions[bot]"},
     "action": "created",
     "comment": {"body": "bot, build", "user": {"login": "github-actions[bot]"}},
@@ -150,14 +150,14 @@ SAMPLE_BOT_CANCEL_PAYLOAD = {
 }
 
 SAMPLE_FLATHUB_MERGE_PAYLOAD = {
-    "repository": {"full_name": "flathub/flathub"},
+    "repository": {"full_name": "OpenPak/openpak"},
     "sender": {"login": "test-reviewer"},
     "action": "created",
     "comment": {"body": "/merge head=" + ("a" * 40)},
     "issue": {
         "number": 42,
         "pull_request": {
-            "url": "https://api.github.com/repos/flathub/flathub/pulls/42"
+            "url": "https://api.github.com/repos/OpenPak/openpak/pulls/42"
         },
     },
 }
@@ -702,7 +702,7 @@ async def test_fetch_flathub_json_success(mock_httpx):
     assert result == {"end-of-life": "This application is no longer maintained."}
     mock_httpx.request.assert_awaited_once_with(
         "GET",
-        "https://api.github.com/repos/test-owner/test-repo/contents/flathub.json?ref=abc123",
+        "https://api.github.com/repos/test-owner/test-repo/contents/openpak.json?ref=abc123",
         headers={
             "Accept": "application/vnd.github.raw+json",
             "Authorization": "token test-token",
@@ -784,7 +784,7 @@ def test_get_eol_only_changes(base_json, head_json, expected_data):
         (
             [
                 {
-                    "filename": "flathub.json",
+                    "filename": "openpak.json",
                 }
             ],
             {
@@ -804,7 +804,7 @@ def test_get_eol_only_changes(base_json, head_json, expected_data):
         (
             [
                 {
-                    "filename": "flathub.json",
+                    "filename": "openpak.json",
                 }
             ],
             {"name": "Old", "end-of-life": "This application is no longer maintained."},
@@ -814,7 +814,7 @@ def test_get_eol_only_changes(base_json, head_json, expected_data):
         ),
         (
             [
-                {"filename": "flathub.json", "patch": "foo"},
+                {"filename": "openpak.json", "patch": "foo"},
                 {"filename": "other.json", "patch": "bar"},
             ],
             {},
@@ -856,7 +856,7 @@ async def test_is_eol_only_pr(
             if (
                 mock_files_response
                 and len(mock_files_response) == 1
-                and mock_files_response[0].get("filename") == "flathub.json"
+                and mock_files_response[0].get("filename") == "openpak.json"
             ):
                 assert mock_fetch.await_count == 2
             else:
@@ -870,7 +870,7 @@ async def test_is_eol_only_pr(
         (
             [
                 {
-                    "filename": "flathub.json",
+                    "filename": "openpak.json",
                 }
             ],
             {
@@ -890,7 +890,7 @@ async def test_is_eol_only_pr(
         (
             [
                 {
-                    "filename": "flathub.json",
+                    "filename": "openpak.json",
                 }
             ],
             {"name": "Old", "end-of-life": "This application is no longer maintained."},
@@ -900,7 +900,7 @@ async def test_is_eol_only_pr(
         ),
         (
             [
-                {"filename": "flathub.json", "patch": "foo"},
+                {"filename": "openpak.json", "patch": "foo"},
                 {"filename": "other.json", "patch": "bar"},
             ],
             {},
@@ -939,7 +939,7 @@ async def test_is_eol_only_push(
             if (
                 mock_files_response
                 and len(mock_files_response) == 1
-                and mock_files_response[0].get("filename") == "flathub.json"
+                and mock_files_response[0].get("filename") == "openpak.json"
             ):
                 assert mock_fetch.await_count == 2
             else:
@@ -1564,7 +1564,7 @@ async def test_create_pipeline_admin_ping(flag_enabled, should_post):
             mock_add_comment.assert_awaited_once_with(
                 git_repo="test-owner/test-repo",
                 issue_number=99,
-                comment="Contacted Flathub admins: cc @flathub/build-moderation",
+                comment="Contacted Openpak admins: cc @openpak/build-moderation",
                 check_duplicates=True,
             )
         else:
@@ -1730,7 +1730,7 @@ async def test_create_pipeline_disable_test_builds_bot_build(flag_enabled):
 SAMPLE_ISSUE_BODY_STABLE = """The stable build pipeline for `test-app` failed.
 
 Commit SHA: abc123456789
-Build log: https://github.com/flathub-infra/vorarbeiter/actions/runs/123456789"""
+Build log: https://github.com/OpenPak/vorarbeiter/actions/runs/123456789"""
 
 SAMPLE_ISSUE_BODY_JOB_FAILURE = """The commit job for `test-app` failed in the stable repository.
 
@@ -1741,23 +1741,23 @@ SAMPLE_ISSUE_BODY_JOB_FAILURE = """The commit job for `test-app` failed in the s
 
 **Job Details:**
 - Job ID: 789
-- Job status: https://hub.flathub.org/status/789
+- Job status: https://hub.openpak.org/status/789
 
-cc @flathub/build-moderation"""
+cc @openpak/build-moderation"""
 
 SAMPLE_ISSUE_BODY_VALIDATION_FAILURE = """The build for `test-app` failed validation during publication in the stable repository.
 
 **Build Information:**
 - Commit SHA: abc123456789
 - Build ID: 456
-- Build log: https://github.com/flathub-infra/vorarbeiter/actions/runs/123456789
+- Build log: https://github.com/OpenPak/vorarbeiter/actions/runs/123456789
 
 **Validation Failure:**
 ```
 1 out of 1 checks failed (flathub-hooks)
 ```
 
-cc @flathub/build-moderation"""
+cc @openpak/build-moderation"""
 
 SAMPLE_RETRY_COMMENT_PAYLOAD = {
     "repository": {"full_name": "flathub/test-app"},

@@ -349,5 +349,5 @@ class TestMiscellaneous:
     def test_get_flatpakref_url(self, flat_manager_client):
         result = flat_manager_client.get_flatpakref_url("12345", "org.test.App")
         assert (
-            result == "https://dl.flathub.org/build-repo/12345/org.test.App.flatpakref"
+            result == "https://dl.openpak.org/build-repo/12345/org.test.App.flatpakref"
         )

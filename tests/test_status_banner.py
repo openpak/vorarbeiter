@@ -37,7 +37,7 @@ DISRUPTED_DATA = {
             "unresolvedIssues": [
                 {
                     "title": "Publish outage",
-                    "permalink": "https://status.flathub.org/issues/2026-02-17-publish/",
+                    "permalink": "https://status.openpak.org/issues/2026-02-17-publish/",
                     "severity": "disrupted",
                     "resolved": False,
                     "informational": False,
@@ -56,7 +56,7 @@ DOWN_DATA = {
             "unresolvedIssues": [
                 {
                     "title": "API outage",
-                    "permalink": "https://status.flathub.org/issues/2026-01-01-api/",
+                    "permalink": "https://status.openpak.org/issues/2026-01-01-api/",
                     "severity": "down",
                     "resolved": False,
                     "informational": False,
@@ -94,7 +94,7 @@ async def test_returns_banner_when_disrupted(cache):
     assert result["issues"][0]["system"] == "Main repository server"
     assert (
         result["issues"][0]["permalink"]
-        == "https://status.flathub.org/issues/2026-02-17-publish/"
+        == "https://status.openpak.org/issues/2026-02-17-publish/"
     )
 
 
@@ -145,7 +145,7 @@ async def test_skips_resolved_issues(cache):
                 "unresolvedIssues": [
                     {
                         "title": "CDN issue",
-                        "permalink": "https://status.flathub.org/issues/cdn/",
+                        "permalink": "https://status.openpak.org/issues/cdn/",
                         "severity": "disrupted",
                         "resolved": True,
                         "informational": False,
@@ -175,7 +175,7 @@ async def test_skips_informational_issues(cache):
                 "unresolvedIssues": [
                     {
                         "title": "Maintenance",
-                        "permalink": "https://status.flathub.org/issues/maintenance/",
+                        "permalink": "https://status.openpak.org/issues/maintenance/",
                         "severity": "disrupted",
                         "resolved": False,
                         "informational": True,
@@ -238,7 +238,7 @@ async def test_multiple_affected_systems(cache):
                 "unresolvedIssues": [
                     {
                         "title": "CDN issue",
-                        "permalink": "https://status.flathub.org/issues/cdn/",
+                        "permalink": "https://status.openpak.org/issues/cdn/",
                         "severity": "disrupted",
                         "resolved": False,
                         "informational": False,
@@ -251,7 +251,7 @@ async def test_multiple_affected_systems(cache):
                 "unresolvedIssues": [
                     {
                         "title": "API issue",
-                        "permalink": "https://status.flathub.org/issues/api/",
+                        "permalink": "https://status.openpak.org/issues/api/",
                         "severity": "disrupted",
                         "resolved": False,
                         "informational": False,
@@ -281,7 +281,7 @@ async def test_uses_cache_when_valid(cache):
         "label": "Outage",
         "summary_status": "disrupted",
         "issues": [],
-        "status_url": "https://status.flathub.org",
+        "status_url": "https://status.openpak.org",
     }
     cache.set(cached_data, time.monotonic())
 

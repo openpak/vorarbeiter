@@ -36,7 +36,7 @@ def test_builds_table_failed_badge_links_to_commit_job(client):
         response = client.get("/api/htmx/builds")
 
     assert response.status_code == 200
-    assert 'href="https://hub.flathub.org/status/12345"' in response.text
+    assert 'href="https://hub.openpak.org/status/12345"' in response.text
     assert ">failed</a>" in response.text
 
 
@@ -54,8 +54,8 @@ def test_builds_table_failed_badge_prefers_update_repo_job(client):
         response = client.get("/api/htmx/builds")
 
     assert response.status_code == 200
-    assert 'href="https://hub.flathub.org/status/12347"' in response.text
-    assert 'href="https://hub.flathub.org/status/12346"' not in response.text
+    assert 'href="https://hub.openpak.org/status/12347"' in response.text
+    assert 'href="https://hub.openpak.org/status/12346"' not in response.text
 
 
 def test_builds_table_failed_badge_falls_back_to_log_url(client):
@@ -87,5 +87,5 @@ def test_app_status_failed_badge_links_in_stable_table(client):
         response = client.get("/status/org.test.App")
 
     assert response.status_code == 200
-    assert 'href="https://hub.flathub.org/status/12345"' in response.text
+    assert 'href="https://hub.openpak.org/status/12345"' in response.text
     assert ">failed</a>" in response.text

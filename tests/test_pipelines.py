@@ -583,18 +583,16 @@ async def test_start_pipeline_stores_default_build_type():
 
     with patch("app.pipelines.build.get_db") as mock_get_db:
         with patch("httpx.AsyncClient") as mock_httpx_client:
-            with patch("app.pipelines.build.get_app_p90_build_time") as mock_p90:
-                mock_p90.return_value = None
-                mock_get_db.return_value.__aenter__.return_value = mock_db_session
-                mock_httpx_client.return_value = mock_httpx_instance
+            mock_get_db.return_value.__aenter__.return_value = mock_db_session
+            mock_httpx_client.return_value = mock_httpx_instance
 
-                build_pipeline = BuildPipeline()
-                build_pipeline.provider = mock_github_provider
+            build_pipeline = BuildPipeline()
+            build_pipeline.provider = mock_github_provider
 
-                await build_pipeline.start_pipeline(pipeline_id)
+            await build_pipeline.start_pipeline(pipeline_id)
 
-                assert mock_pipeline.params["build_type"] == "medium"
-                mock_p90.assert_called_once_with(mock_db_session, "org.example.app")
+            # Openpak has no AWS spot fleet — build_type is always "default".
+            assert mock_pipeline.params["build_type"] == "default"
 
 
 @pytest.mark.asyncio
@@ -633,7 +631,8 @@ async def test_start_pipeline_stores_hardcoded_build_type():
 
             await build_pipeline.start_pipeline(pipeline_id)
 
-            assert mock_pipeline.params["build_type"] == "large"
+            # Openpak has no AWS spot fleet — build_type is always "default".
+            assert mock_pipeline.params["build_type"] == "default"
 
 
 @pytest.mark.asyncio
@@ -730,11 +729,13 @@ async def test_start_pipeline_reuses_stored_metadata():
 @pytest.mark.parametrize(
     "p90_value, expected_build_type",
     [
+        # Openpak has no AWS spot fleet — build_type is always "default"
+        # regardless of the historical p90 build-time heuristic.
         (8.0, "default"),
         (10.0, "default"),
         (20.0, "default"),
-        (20.1, "medium"),
-        (None, "medium"),
+        (20.1, "default"),
+        (None, "default"),
     ],
 )
 async def test_start_pipeline_p90_routing(
@@ -778,7 +779,6 @@ async def test_start_pipeline_p90_routing(
     await build_pipeline.start_pipeline(pipeline_id)
 
     assert mock_pipeline.params["build_type"] == expected_build_type
-    mock_p90.assert_called_once_with(mock_db_session, "org.example.app")
 
 
 @pytest.mark.asyncio
@@ -933,7 +933,7 @@ def test_pipeline_metadata_callback_app_id(mock_get_db, sample_pipeline):
     test_client = TestClient(app)
 
     pipeline_id = sample_pipeline.id
-    sample_pipeline.app_id = "flathub"
+    sample_pipeline.app_id = "openpak"
 
     mock_get_db_session = create_mock_get_db(mock_get_db)
 

@@ -37,7 +37,7 @@ async def test_notify_flat_manager_job_status():
             state="pending",
             git_repo="flathub/org.example.App",
             description="Committing build...",
-            target_url="https://hub.flathub.org/status/12345",
+            target_url="https://hub.openpak.org/status/12345",
             context="flat-manager/commit",
         )
 

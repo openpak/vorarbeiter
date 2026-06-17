@@ -244,7 +244,7 @@ async def test_notify_pr_build_complete_success_with_download(
     github_notifier, mock_pipeline
 ):
     github_notifier.flat_manager.get_flatpakref_url.return_value = (
-        "https://dl.flathub.org/build-repo/123/org.test.App.flatpakref"
+        "https://dl.openpak.org/build-repo/123/org.test.App.flatpakref"
     )
 
     with patch("app.services.github_notifier.create_pr_comment") as mock_comment:
@@ -287,7 +287,7 @@ async def test_notify_pr_build_complete_failure(
 
         if flag_enabled:
             expected_comment += (
-                "- <code>bot, ping admins</code> - Contact Flathub admins\n"
+                "- <code>bot, ping admins</code> - Contact Openpak admins\n"
             )
 
         expected_comment += "</details>"
@@ -304,7 +304,7 @@ async def test_notify_pr_build_complete_committed_with_download(
     github_notifier, mock_pipeline
 ):
     github_notifier.flat_manager.get_flatpakref_url.return_value = (
-        "https://dl.flathub.org/build-repo/123/org.test.App.flatpakref"
+        "https://dl.openpak.org/build-repo/123/org.test.App.flatpakref"
     )
 
     fake_linter_warnings = [
@@ -329,7 +329,7 @@ async def test_notify_pr_build_complete_committed_with_download(
             "✅ [Test build succeeded](https://example.com/logs/123). "
             "To test this build, install it from the testing repository:\n\n"
             "```\nflatpak install --user "
-            "https://dl.flathub.org/build-repo/123/org.test.App.flatpakref\n```"
+            "https://dl.openpak.org/build-repo/123/org.test.App.flatpakref\n```"
             "\n\n*Built for aarch64 and x86_64 architectures.*"
             "\n\n⚠️  Linter warnings:\n\n"
             "_Warnings can be promoted to errors in the future. Please try to resolve them._\n\n"
@@ -381,7 +381,7 @@ async def test_notify_pr_build_complete_cancelled(github_notifier, mock_pipeline
                 "❌ [Test build](https://example.com/logs/123) was cancelled.\n\n"
                 "<details><summary>Help</summary>\n\n"
                 "- <code>bot, build</code> - Restart the test build\n"
-                "- <code>bot, ping admins</code> - Contact Flathub admins\n"
+                "- <code>bot, ping admins</code> - Contact Openpak admins\n"
                 "</details>"
             ),
         )
@@ -404,11 +404,11 @@ async def test_notify_pr_build_complete_commit_failure(github_notifier, mock_pip
             git_repo="flathub/org.test.App",
             pr_number=42,
             comment=(
-                "❌ The [commit job](https://hub.flathub.org/status/12345) failed. "
-                "This may indicate [an infrastructure issue](https://status.flathub.org).\n\n"
+                "❌ The [commit job](https://hub.openpak.org/status/12345) failed. "
+                "This may indicate [an infrastructure issue](https://status.openpak.org).\n\n"
                 "<details><summary>Help</summary>\n\n"
                 "- <code>bot, build</code> - Restart the test build\n"
-                "- <code>bot, ping admins</code> - Contact Flathub admins\n"
+                "- <code>bot, ping admins</code> - Contact Openpak admins\n"
                 "</details>\n\n"
                 "cc @tobagin"
             ),
@@ -441,7 +441,7 @@ async def test_create_stable_build_failure_issue(github_notifier, mock_pipeline)
             "Please check the logs for details. "
             "If the failure was unexpected, you can retry the build "
             "by commenting `bot, retry` in this issue.\n\n"
-            "cc @flathub/build-moderation"
+            "cc @openpak/build-moderation"
         )
 
         mock_issue.assert_called_once_with(
@@ -480,7 +480,7 @@ async def test_create_stable_build_failure_issue_no_log_url(
             "The stable build pipeline for `org.test.App` failed.\n\n"
             "Commit SHA: abc123def456\n"
             "Build log URL not available.\n\n"
-            "cc @flathub/build-moderation"
+            "cc @openpak/build-moderation"
         )
 
         mock_issue.assert_called_once()
@@ -632,14 +632,14 @@ async def test_create_stable_job_failure_issue_commit(github_notifier, mock_pipe
             "- Build log: https://example.com/logs/123\n\n"
             "**Job Details:**\n"
             "- Job ID: 12345\n"
-            "- Job status: https://hub.flathub.org/status/12345\n\n"
+            "- Job status: https://hub.openpak.org/status/12345\n\n"
             "**Error Details:**\n```\n"
             "Error: Could not commit to repository\n"
             "flat-manager: commit failed\n"
             "Build artifacts not found\n```\n\n"
-            "cc @flathub/build-moderation\n\n"
-            "This issue is being opened for tracking by Flathub admins and may indicate "
-            "an [infrastructure problem](https://status.flathub.org). Please do not close or modify this until "
+            "cc @openpak/build-moderation\n\n"
+            "This issue is being opened for tracking by Openpak admins and may indicate "
+            "an [infrastructure problem](https://status.openpak.org). Please do not close or modify this until "
             "an admin has responded.\n"
         )
 
@@ -677,13 +677,13 @@ async def test_create_stable_job_failure_issue_publish(github_notifier, mock_pip
             "- Build log: https://example.com/logs/123\n\n"
             "**Job Details:**\n"
             "- Job ID: 54321\n"
-            "- Job status: https://hub.flathub.org/status/54321\n\n"
+            "- Job status: https://hub.openpak.org/status/54321\n\n"
             "**Error Details:**\n```\n"
             "Error: Publish failed\n"
             "Repository access denied\n```\n\n"
-            "cc @flathub/build-moderation\n\n"
-            "This issue is being opened for tracking by Flathub admins and may indicate "
-            "an [infrastructure problem](https://status.flathub.org). Please do not close or modify this until "
+            "cc @openpak/build-moderation\n\n"
+            "This issue is being opened for tracking by Openpak admins and may indicate "
+            "an [infrastructure problem](https://status.openpak.org). Please do not close or modify this until "
             "an admin has responded.\n"
         )
 
@@ -723,13 +723,13 @@ async def test_create_stable_job_failure_issue_update_repo(
             "- Build log: https://example.com/logs/123\n\n"
             "**Job Details:**\n"
             "- Job ID: 98765\n"
-            "- Job status: https://hub.flathub.org/status/98765\n\n"
+            "- Job status: https://hub.openpak.org/status/98765\n\n"
             "**Error Details:**\n```\n"
             "Error: Repository update failed\n"
             "Disk space insufficient\n```\n\n"
-            "cc @flathub/build-moderation\n\n"
-            "This issue is being opened for tracking by Flathub admins and may indicate "
-            "an [infrastructure problem](https://status.flathub.org). Please do not close or modify this until "
+            "cc @openpak/build-moderation\n\n"
+            "This issue is being opened for tracking by Openpak admins and may indicate "
+            "an [infrastructure problem](https://status.openpak.org). Please do not close or modify this until "
             "an admin has responded.\n"
         )
 
@@ -890,9 +890,9 @@ async def test_create_validation_failure_issue_stable(
             "1 out of 1 checks failed (flathub-hooks)\n\n"
             "One or more validations failed.\n\n"
             f"{flathub_hooks_check['results']}\n```\n\n"
-            "cc @flathub/build-moderation\n\n"
-            "This issue is being opened for tracking by Flathub admins and may indicate "
-            "an [infrastructure problem](https://status.flathub.org). Please do not close or modify this until "
+            "cc @openpak/build-moderation\n\n"
+            "This issue is being opened for tracking by Openpak admins and may indicate "
+            "an [infrastructure problem](https://status.openpak.org). Please do not close or modify this until "
             "an admin has responded.\n"
         )
 
