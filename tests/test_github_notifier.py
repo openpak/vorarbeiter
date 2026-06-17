@@ -410,7 +410,7 @@ async def test_notify_pr_build_complete_commit_failure(github_notifier, mock_pip
                 "- <code>bot, build</code> - Restart the test build\n"
                 "- <code>bot, ping admins</code> - Contact Flathub admins\n"
                 "</details>\n\n"
-                "cc @barthalion"
+                "cc @tobagin"
             ),
         )
 

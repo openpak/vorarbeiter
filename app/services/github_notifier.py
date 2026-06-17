@@ -238,7 +238,7 @@ class GitHubNotifier:
                     f"❌ {f'The [commit job]({settings.flat_manager_url}/status/{pipeline.commit_job_id}) failed.' if pipeline.commit_job_id else 'The commit job failed.'} "
                     f"This may indicate [an infrastructure issue](https://status.openpak.org).\n\n"
                     f"{footnote}\n\n"
-                    "cc @barthalion"
+                    "cc @tobagin"
                 )
 
             if comment:
