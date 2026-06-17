@@ -21,7 +21,7 @@ def mock_build_pipeline():
         status=PipelineStatus.PUBLISHED,
         params={
             "sha": "abc123def456",
-            "repo": "flathub/org.test.App",
+            "repo": "openpak/org.test.App",
         },
         triggered_by=PipelineTrigger.WEBHOOK,
         flat_manager_repo="stable",
@@ -39,7 +39,7 @@ def mock_reprocheck_pipeline(mock_build_pipeline):
             "build_pipeline_id": str(mock_build_pipeline.id),
             "reprocheck_result": {
                 "status_code": "42",
-                "result_url": "https://buildbot.flathub.org/builds/12345",
+                "result_url": "https://buildbot.openpak.org/builds/12345",
             },
         },
         triggered_by=PipelineTrigger.WEBHOOK,
@@ -63,7 +63,7 @@ async def test_handle_failure_creates_new_issue(
             "app.services.reprocheck_notification.create_github_issue"
         ) as mock_create:
             mock_create.return_value = (
-                "https://github.com/flathub/org.test.App/issues/1",
+                "https://github.com/openpak/org.test.App/issues/1",
                 1,
             )
 
@@ -73,7 +73,7 @@ async def test_handle_failure_creates_new_issue(
 
             mock_create.assert_called_once()
             call_args = mock_create.call_args
-            assert call_args[0][0] == "flathub/org.test.App"
+            assert call_args[0][0] == "openpak/org.test.App"
             assert call_args[0][1] == "Reproducible build check failed"
             assert "abc123def456" in call_args[0][2]
 
@@ -117,7 +117,7 @@ async def test_handle_failure_adds_comment_to_open_issue(
                 db, mock_reprocheck_pipeline
             )
 
-            mock_get_issue.assert_called_once_with("flathub/org.test.App", 123)
+            mock_get_issue.assert_called_once_with("openpak/org.test.App", 123)
             mock_add_comment.assert_called_once()
             assert "Another failure" in mock_add_comment.call_args[0][2]
 
@@ -159,7 +159,7 @@ async def test_handle_failure_reopens_manually_closed_issue(
                 db, mock_reprocheck_pipeline
             )
 
-            mock_reopen.assert_called_once_with("flathub/org.test.App", 123)
+            mock_reopen.assert_called_once_with("openpak/org.test.App", 123)
             mock_add_comment.assert_called_once()
             assert "Reopening" in mock_add_comment.call_args[0][2]
 
@@ -192,7 +192,7 @@ async def test_handle_failure_creates_new_issue_after_auto_close(
                 "state_reason": "completed",
             }
             mock_create.return_value = (
-                "https://github.com/flathub/org.test.App/issues/2",
+                "https://github.com/openpak/org.test.App/issues/2",
                 2,
             )
 
@@ -224,7 +224,7 @@ async def test_handle_success_closes_existing_issue(
             "build_pipeline_id": str(mock_build_pipeline.id),
             "reprocheck_result": {
                 "status_code": "0",
-                "result_url": "https://buildbot.flathub.org/builds/12345",
+                "result_url": "https://buildbot.openpak.org/builds/12345",
             },
         },
         triggered_by=PipelineTrigger.WEBHOOK,
@@ -254,7 +254,7 @@ async def test_handle_success_closes_existing_issue(
 
             mock_add_comment.assert_called_once()
             assert "reproducible" in mock_add_comment.call_args[0][2]
-            mock_close.assert_called_once_with("flathub/org.test.App", 123)
+            mock_close.assert_called_once_with("openpak/org.test.App", 123)
 
             from sqlalchemy import select
 
@@ -277,7 +277,7 @@ async def test_handle_success_no_existing_issue(
             "build_pipeline_id": str(mock_build_pipeline.id),
             "reprocheck_result": {
                 "status_code": "0",
-                "result_url": "https://buildbot.flathub.org/builds/12345",
+                "result_url": "https://buildbot.openpak.org/builds/12345",
             },
         },
         triggered_by=PipelineTrigger.WEBHOOK,
@@ -315,7 +315,7 @@ async def test_handle_failure_missing_build_pipeline(
             "build_pipeline_id": str(uuid.uuid4()),
             "reprocheck_result": {
                 "status_code": "42",
-                "result_url": "https://buildbot.flathub.org/builds/12345",
+                "result_url": "https://buildbot.openpak.org/builds/12345",
             },
         },
         triggered_by=PipelineTrigger.WEBHOOK,

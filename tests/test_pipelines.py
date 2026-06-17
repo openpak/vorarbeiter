@@ -1039,7 +1039,7 @@ def test_pipeline_log_url_callback_success(mock_get_db, sample_pipeline):
         mock_notifier.handle_build_started = AsyncMock()
         mock_notifier_class.return_value = mock_notifier
 
-        data = {"log_url": "https://github.com/flathub-infra/builds/runs/12345"}
+        data = {"log_url": "https://github.com/openpak/builds/runs/12345"}
         headers = {"Authorization": "Bearer test_token_12345"}
 
         response = test_client.post(
@@ -1049,10 +1049,10 @@ def test_pipeline_log_url_callback_success(mock_get_db, sample_pipeline):
     assert response.status_code == 200
     assert (
         response.json()["log_url"]
-        == "https://github.com/flathub-infra/builds/runs/12345"
+        == "https://github.com/openpak/builds/runs/12345"
     )
     assert (
-        sample_pipeline.log_url == "https://github.com/flathub-infra/builds/runs/12345"
+        sample_pipeline.log_url == "https://github.com/openpak/builds/runs/12345"
     )
     mock_notifier.handle_build_started.assert_called_once()
 
@@ -1063,7 +1063,7 @@ def test_pipeline_log_url_callback_cancelled_pipeline(mock_get_db, sample_pipeli
     pipeline_id = sample_pipeline.id
     sample_pipeline.status = PipelineStatus.CANCELLED
     sample_pipeline.provider_data = {
-        "owner": "flathub-infra",
+        "owner": "openpak",
         "repo": "vorarbeiter",
     }
 
@@ -1081,7 +1081,7 @@ def test_pipeline_log_url_callback_cancelled_pipeline(mock_get_db, sample_pipeli
         mock_notifier_class.return_value = mock_notifier
         mock_actions_class.return_value.cancel = AsyncMock(return_value=True)
 
-        data = {"log_url": "https://github.com/flathub-infra/builds/runs/12345"}
+        data = {"log_url": "https://github.com/openpak/builds/runs/12345"}
         headers = {"Authorization": "Bearer test_token_12345"}
 
         response = test_client.post(
@@ -1091,13 +1091,13 @@ def test_pipeline_log_url_callback_cancelled_pipeline(mock_get_db, sample_pipeli
     assert response.status_code == 200
     assert (
         response.json()["log_url"]
-        == "https://github.com/flathub-infra/builds/runs/12345"
+        == "https://github.com/openpak/builds/runs/12345"
     )
     assert (
-        sample_pipeline.log_url == "https://github.com/flathub-infra/builds/runs/12345"
+        sample_pipeline.log_url == "https://github.com/openpak/builds/runs/12345"
     )
     assert sample_pipeline.provider_data == {
-        "owner": "flathub-infra",
+        "owner": "openpak",
         "repo": "vorarbeiter",
         "run_id": "12345",
     }
@@ -1121,7 +1121,7 @@ def test_pipeline_log_url_callback_already_set(mock_get_db, sample_pipeline):
     ):
         mock_get_db.get.return_value = sample_pipeline
 
-        data = {"log_url": "https://github.com/flathub-infra/builds/runs/12345"}
+        data = {"log_url": "https://github.com/openpak/builds/runs/12345"}
         headers = {"Authorization": "Bearer test_token_12345"}
 
         response = test_client.post(
@@ -1162,7 +1162,7 @@ def test_pipeline_status_callback_success(mock_get_db, sample_pipeline):
     pipeline_id = sample_pipeline.id
     sample_pipeline.status = PipelineStatus.RUNNING
     sample_pipeline.build_id = 123
-    sample_pipeline.params = {"sha": "abc123", "repo": "flathub/test-app"}
+    sample_pipeline.params = {"sha": "abc123", "repo": "openpak/test-app"}
 
     mock_flat_manager = MagicMock()
     mock_flat_manager.commit = AsyncMock()

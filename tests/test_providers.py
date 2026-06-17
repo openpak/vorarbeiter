@@ -20,7 +20,7 @@ async def test_github_provider_dispatch(github_token, mock_httpx):
         "app_id": "org.flathub.Test",
         "job_type": "build",
         "params": {
-            "owner": "flathub",
+            "owner": "openpak",
             "repo": "actions",
             "workflow_id": "build.yml",
             "ref": "main",
@@ -35,14 +35,14 @@ async def test_github_provider_dispatch(github_token, mock_httpx):
     args, _ = mock_httpx.request.call_args
     assert args[0] == "POST"
     assert (
-        "https://api.github.com/repos/flathub/actions/actions/workflows/build.yml/dispatches"
+        "https://api.github.com/repos/openpak/actions/actions/workflows/build.yml/dispatches"
         in args[1]
     )
 
     assert result["status"] == "dispatched"
     assert result["job_id"] == job_id
     assert result["pipeline_id"] == pipeline_id
-    assert result["owner"] == "flathub"
+    assert result["owner"] == "openpak"
     assert result["repo"] == "actions"
     assert result["workflow_id"] == "build.yml"
     assert result["ref"] == "main"
@@ -54,7 +54,7 @@ async def test_github_provider_cancel(github_token, mock_httpx):
     provider = GitHubActionsService()
 
     job_id = str(uuid.uuid4())
-    provider_data = {"owner": "flathub", "repo": "actions", "run_id": 12345}
+    provider_data = {"owner": "openpak", "repo": "actions", "run_id": 12345}
 
     with mock_httpx.patch():
         result = await provider.cancel(job_id, provider_data)
@@ -63,7 +63,7 @@ async def test_github_provider_cancel(github_token, mock_httpx):
     args, _ = mock_httpx.request.call_args
     assert args[0] == "POST"
     assert (
-        "https://api.github.com/repos/flathub/actions/actions/runs/12345/cancel"
+        "https://api.github.com/repos/openpak/actions/actions/runs/12345/cancel"
         in args[1]
     )
 
@@ -75,7 +75,7 @@ async def test_github_provider_cancel_missing_run_id(github_token, mock_httpx):
     provider = GitHubActionsService()
 
     job_id = str(uuid.uuid4())
-    provider_data = {"owner": "flathub", "repo": "actions"}
+    provider_data = {"owner": "openpak", "repo": "actions"}
 
     with mock_httpx.patch():
         result = await provider.cancel(job_id, provider_data)
@@ -94,13 +94,13 @@ async def test_github_provider_get_workflow_run_jobs(github_token, mock_httpx):
     provider = GitHubActionsService()
 
     with mock_httpx.patch():
-        result = await provider.get_workflow_run_jobs("flathub", "actions", 12345)
+        result = await provider.get_workflow_run_jobs("openpak", "actions", 12345)
 
     mock_httpx.request.assert_called_once()
     args, _ = mock_httpx.request.call_args
     assert args[0] == "GET"
     assert (
-        "https://api.github.com/repos/flathub/actions/actions/runs/12345/jobs"
+        "https://api.github.com/repos/openpak/actions/actions/runs/12345/jobs"
         in args[1]
     )
     assert result == [{"name": "build-x86_64", "status": "in_progress"}]

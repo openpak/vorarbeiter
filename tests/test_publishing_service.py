@@ -333,7 +333,7 @@ async def test_create_validation_failure_issue_swallowed(publishing_service):
         status=PipelineStatus.COMMITTED,
         build_id=123,
         flat_manager_repo="stable",
-        params={"repo": "flathub/org.test.App"},
+        params={"repo": "openpak/org.test.App"},
     )
 
     with patch("app.services.github_notifier.GitHubNotifier") as mock_notifier_class:

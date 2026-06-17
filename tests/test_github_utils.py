@@ -29,7 +29,7 @@ async def test_update_commit_status_success(mock_settings, mock_httpx):
         await update_commit_status(
             sha="abc123",
             state="success",
-            git_repo="flathub/test-app",
+            git_repo="openpak/test-app",
             target_url="https://example.com/build/123",
             description="Build succeeded",
         )
@@ -40,7 +40,7 @@ async def test_update_commit_status_success(mock_settings, mock_httpx):
     assert call_args[0][0] == "POST"
     assert (
         call_args[0][1]
-        == "https://api.github.com/repos/flathub/test-app/statuses/abc123"
+        == "https://api.github.com/repos/openpak/test-app/statuses/abc123"
     )
     assert call_args[1]["json"]["state"] == "success"
     assert call_args[1]["json"]["context"] == "builds/x86_64"
@@ -56,7 +56,7 @@ async def test_update_commit_status_custom_context(mock_settings, mock_httpx):
         await update_commit_status(
             sha="abc123",
             state="pending",
-            git_repo="flathub/test-app",
+            git_repo="openpak/test-app",
             context="builds/aarch64",
         )
 
@@ -75,7 +75,7 @@ async def test_update_commit_status_missing_repo(mock_settings, mock_httpx):
 @pytest.mark.asyncio
 async def test_update_commit_status_missing_sha(mock_settings, mock_httpx):
     with mock_httpx.patch():
-        await update_commit_status(sha="", state="success", git_repo="flathub/test-app")
+        await update_commit_status(sha="", state="success", git_repo="openpak/test-app")
 
     mock_httpx.request.assert_not_called()
 
@@ -86,7 +86,7 @@ async def test_update_commit_status_null_sha(mock_settings, mock_httpx):
         await update_commit_status(
             sha="0000000000000000000000000000000000000000",
             state="success",
-            git_repo="flathub/test-app",
+            git_repo="openpak/test-app",
         )
 
     mock_httpx.request.assert_not_called()
@@ -96,7 +96,7 @@ async def test_update_commit_status_null_sha(mock_settings, mock_httpx):
 async def test_update_commit_status_invalid_state(mock_settings, mock_httpx):
     with mock_httpx.patch():
         await update_commit_status(
-            sha="abc123", state="invalid_state", git_repo="flathub/test-app"
+            sha="abc123", state="invalid_state", git_repo="openpak/test-app"
         )
 
     mock_httpx.request.assert_not_called()
@@ -118,7 +118,7 @@ async def test_update_commit_status_request_error_retry(mock_settings, mock_http
         )
         with mock_httpx.patch():
             await update_commit_status(
-                sha="abc123", state="success", git_repo="flathub/test-app"
+                sha="abc123", state="success", git_repo="openpak/test-app"
             )
 
         assert mock_httpx.request.call_count == 3
@@ -137,7 +137,7 @@ async def test_update_commit_status_request_error_max_retries(
         )
         with mock_httpx.patch():
             await update_commit_status(
-                sha="abc123", state="success", git_repo="flathub/test-app"
+                sha="abc123", state="success", git_repo="openpak/test-app"
             )
 
         assert mock_httpx.request.call_count == 4
@@ -158,7 +158,7 @@ async def test_update_commit_status_http_error(mock_settings, mock_httpx):
     )
     with mock_httpx.patch():
         await update_commit_status(
-            sha="abc123", state="success", git_repo="flathub/test-app"
+            sha="abc123", state="success", git_repo="openpak/test-app"
         )
 
     mock_httpx.request.assert_called_once()
@@ -188,7 +188,7 @@ async def test_update_commit_status_retry_on_500_error(mock_settings, mock_httpx
         )
         with mock_httpx.patch():
             await update_commit_status(
-                sha="abc123", state="success", git_repo="flathub/test-app"
+                sha="abc123", state="success", git_repo="openpak/test-app"
             )
 
         assert mock_httpx.request.call_count == 3
@@ -212,7 +212,7 @@ async def test_update_commit_status_max_retries_exceeded(mock_settings, mock_htt
         )
         with mock_httpx.patch():
             await update_commit_status(
-                sha="abc123", state="success", git_repo="flathub/test-app"
+                sha="abc123", state="success", git_repo="openpak/test-app"
             )
 
         assert mock_httpx.request.call_count == 4
@@ -227,7 +227,7 @@ async def test_update_commit_status_unexpected_error(mock_settings, mock_httpx):
     mock_httpx.set_response("request", side_effect=Exception("Unexpected error"))
     with mock_httpx.patch():
         await update_commit_status(
-            sha="abc123", state="success", git_repo="flathub/test-app"
+            sha="abc123", state="success", git_repo="openpak/test-app"
         )
 
     mock_httpx.request.assert_called_once()
@@ -238,7 +238,7 @@ async def test_create_pr_comment_success(mock_settings, mock_httpx):
     mock_httpx.set_response("request")
     with mock_httpx.patch():
         await create_pr_comment(
-            git_repo="flathub/test-app", pr_number=42, comment="Build started!"
+            git_repo="openpak/test-app", pr_number=42, comment="Build started!"
         )
 
     mock_httpx.request.assert_called_once()
@@ -247,7 +247,7 @@ async def test_create_pr_comment_success(mock_settings, mock_httpx):
     assert call_args[0][0] == "POST"
     assert (
         call_args[0][1]
-        == "https://api.github.com/repos/flathub/test-app/issues/42/comments"
+        == "https://api.github.com/repos/openpak/test-app/issues/42/comments"
     )
     assert call_args[1]["json"]["body"] == "Build started!"
     assert call_args[1]["headers"]["Authorization"] == "token test-token"
@@ -265,7 +265,7 @@ async def test_create_pr_comment_missing_repo(mock_settings, mock_httpx):
 async def test_create_pr_comment_missing_pr_number(mock_settings, mock_httpx):
     with mock_httpx.patch():
         await create_pr_comment(
-            git_repo="flathub/test-app", pr_number=0, comment="Test comment"
+            git_repo="openpak/test-app", pr_number=0, comment="Test comment"
         )
 
     mock_httpx.request.assert_not_called()
@@ -276,7 +276,7 @@ async def test_create_pr_comment_request_error(mock_settings, mock_httpx):
     mock_httpx.set_response("request", side_effect=httpx.RequestError("Network error"))
     with mock_httpx.patch():
         await create_pr_comment(
-            git_repo="flathub/test-app", pr_number=42, comment="Test comment"
+            git_repo="openpak/test-app", pr_number=42, comment="Test comment"
         )
 
     assert mock_httpx.request.call_count == 4
@@ -296,7 +296,7 @@ async def test_create_pr_comment_http_error(mock_settings, mock_httpx):
     )
     with mock_httpx.patch():
         await create_pr_comment(
-            git_repo="flathub/test-app", pr_number=42, comment="Test comment"
+            git_repo="openpak/test-app", pr_number=42, comment="Test comment"
         )
 
     mock_httpx.request.assert_called_once()
@@ -307,7 +307,7 @@ async def test_create_pr_comment_unexpected_error(mock_settings, mock_httpx):
     mock_httpx.set_response("request", side_effect=Exception("Unexpected error"))
     with mock_httpx.patch():
         await create_pr_comment(
-            git_repo="flathub/test-app", pr_number=42, comment="Test comment"
+            git_repo="openpak/test-app", pr_number=42, comment="Test comment"
         )
 
     mock_httpx.request.assert_called_once()
@@ -318,13 +318,13 @@ async def test_create_github_issue_success(mock_settings, mock_httpx):
     mock_httpx.set_response(
         "request",
         json_data={
-            "html_url": "https://github.com/flathub/test-app/issues/123",
+            "html_url": "https://github.com/openpak/test-app/issues/123",
             "number": 123,
         },
     )
     with mock_httpx.patch():
         result = await create_github_issue(
-            git_repo="flathub/test-app",
+            git_repo="openpak/test-app",
             title="Build failed",
             body="The build failed with error XYZ",
         )
@@ -333,11 +333,11 @@ async def test_create_github_issue_success(mock_settings, mock_httpx):
     call_args = mock_httpx.request.call_args
 
     assert call_args[0][0] == "POST"
-    assert call_args[0][1] == "https://api.github.com/repos/flathub/test-app/issues"
+    assert call_args[0][1] == "https://api.github.com/repos/openpak/test-app/issues"
     assert call_args[1]["json"]["title"] == "Build failed"
     assert call_args[1]["json"]["body"] == "The build failed with error XYZ"
     assert call_args[1]["headers"]["Authorization"] == "token test-token"
-    assert result == ("https://github.com/flathub/test-app/issues/123", 123)
+    assert result == ("https://github.com/openpak/test-app/issues/123", 123)
 
 
 @pytest.mark.asyncio
@@ -355,7 +355,7 @@ async def test_create_github_issue_request_error(mock_settings, mock_httpx):
     mock_httpx.set_response("request", side_effect=httpx.RequestError("Network error"))
     with mock_httpx.patch():
         result = await create_github_issue(
-            git_repo="flathub/test-app", title="Build failed", body="Error details"
+            git_repo="openpak/test-app", title="Build failed", body="Error details"
         )
 
     assert result is None
@@ -376,7 +376,7 @@ async def test_create_github_issue_http_error(mock_settings, mock_httpx):
     )
     with mock_httpx.patch():
         await create_github_issue(
-            git_repo="flathub/test-app", title="Build failed", body="Error details"
+            git_repo="openpak/test-app", title="Build failed", body="Error details"
         )
 
     mock_httpx.request.assert_called_once()
@@ -387,7 +387,7 @@ async def test_create_github_issue_unexpected_error(mock_settings, mock_httpx):
     mock_httpx.set_response("request", side_effect=Exception("Unexpected error"))
     with mock_httpx.patch():
         await create_github_issue(
-            git_repo="flathub/test-app", title="Build failed", body="Error details"
+            git_repo="openpak/test-app", title="Build failed", body="Error details"
         )
 
     mock_httpx.request.assert_called_once()
@@ -397,11 +397,11 @@ async def test_create_github_issue_unexpected_error(mock_settings, mock_httpx):
 async def test_create_github_issue_no_issue_number(mock_settings, mock_httpx):
     mock_httpx.set_response(
         "request",
-        json_data={"html_url": "https://github.com/flathub/test-app/issues/123"},
+        json_data={"html_url": "https://github.com/openpak/test-app/issues/123"},
     )
     with mock_httpx.patch():
         result = await create_github_issue(
-            git_repo="flathub/test-app", title="Build failed", body="Error details"
+            git_repo="openpak/test-app", title="Build failed", body="Error details"
         )
 
     mock_httpx.request.assert_called_once()
@@ -412,14 +412,14 @@ async def test_create_github_issue_no_issue_number(mock_settings, mock_httpx):
 async def test_close_github_issue_success(mock_settings, mock_httpx):
     mock_httpx.set_response("request")
     with mock_httpx.patch():
-        result = await close_github_issue(git_repo="flathub/test-app", issue_number=123)
+        result = await close_github_issue(git_repo="openpak/test-app", issue_number=123)
 
     assert result is True
     mock_httpx.request.assert_called_once()
     call_args = mock_httpx.request.call_args
 
     assert call_args[0][0] == "PATCH"
-    assert call_args[0][1] == "https://api.github.com/repos/flathub/test-app/issues/123"
+    assert call_args[0][1] == "https://api.github.com/repos/openpak/test-app/issues/123"
     assert call_args[1]["json"]["state"] == "closed"
     assert call_args[1]["headers"]["Authorization"] == "token test-token"
 
@@ -436,7 +436,7 @@ async def test_close_github_issue_missing_repo(mock_settings, mock_httpx):
 @pytest.mark.asyncio
 async def test_close_github_issue_missing_issue_number(mock_settings, mock_httpx):
     with mock_httpx.patch():
-        result = await close_github_issue(git_repo="flathub/test-app", issue_number=0)
+        result = await close_github_issue(git_repo="openpak/test-app", issue_number=0)
 
     assert result is False
     mock_httpx.request.assert_not_called()
@@ -455,7 +455,7 @@ async def test_close_github_issue_http_error(mock_settings, mock_httpx):
         ),
     )
     with mock_httpx.patch():
-        result = await close_github_issue(git_repo="flathub/test-app", issue_number=123)
+        result = await close_github_issue(git_repo="openpak/test-app", issue_number=123)
 
     assert result is False
     mock_httpx.request.assert_called_once()
@@ -466,7 +466,7 @@ async def test_add_issue_comment_success(mock_settings, mock_httpx):
     mock_httpx.set_response("request")
     with mock_httpx.patch():
         result = await add_issue_comment(
-            git_repo="flathub/test-app", issue_number=123, comment="Retry triggered"
+            git_repo="openpak/test-app", issue_number=123, comment="Retry triggered"
         )
 
     assert result is True
@@ -476,7 +476,7 @@ async def test_add_issue_comment_success(mock_settings, mock_httpx):
     assert call_args[0][0] == "POST"
     assert (
         call_args[0][1]
-        == "https://api.github.com/repos/flathub/test-app/issues/123/comments"
+        == "https://api.github.com/repos/openpak/test-app/issues/123/comments"
     )
     assert call_args[1]["json"]["body"] == "Retry triggered"
     assert call_args[1]["headers"]["Authorization"] == "token test-token"
@@ -497,7 +497,7 @@ async def test_add_issue_comment_missing_repo(mock_settings, mock_httpx):
 async def test_add_issue_comment_missing_issue_number(mock_settings, mock_httpx):
     with mock_httpx.patch():
         result = await add_issue_comment(
-            git_repo="flathub/test-app", issue_number=0, comment="Test comment"
+            git_repo="openpak/test-app", issue_number=0, comment="Test comment"
         )
 
     assert result is False
@@ -564,7 +564,7 @@ async def test_rate_limit_fails_fast(mock_settings, mock_httpx):
 
     with mock_httpx.patch():
         result = await create_github_issue(
-            git_repo="flathub/test-app", title="Test", body="Body"
+            git_repo="openpak/test-app", title="Test", body="Body"
         )
 
     assert result is None
@@ -625,7 +625,7 @@ async def test_add_comment_reaction_success(mock_settings, mock_httpx):
     mock_httpx.set_response("request")
     with mock_httpx.patch():
         result = await add_comment_reaction(
-            git_repo="flathub/test-app", comment_id=98765
+            git_repo="openpak/test-app", comment_id=98765
         )
 
     assert result is True
@@ -635,7 +635,7 @@ async def test_add_comment_reaction_success(mock_settings, mock_httpx):
     assert call_args[0][0] == "POST"
     assert (
         call_args[0][1]
-        == "https://api.github.com/repos/flathub/test-app/issues/comments/98765/reactions"
+        == "https://api.github.com/repos/openpak/test-app/issues/comments/98765/reactions"
     )
     assert call_args[1]["json"] == {"content": "+1"}
     assert call_args[1]["headers"]["Authorization"] == "token test-token"
@@ -653,7 +653,7 @@ async def test_add_comment_reaction_missing_repo(mock_settings, mock_httpx):
 @pytest.mark.asyncio
 async def test_add_comment_reaction_missing_comment_id(mock_settings, mock_httpx):
     with mock_httpx.patch():
-        result = await add_comment_reaction(git_repo="flathub/test-app", comment_id=0)
+        result = await add_comment_reaction(git_repo="openpak/test-app", comment_id=0)
 
     assert result is False
     mock_httpx.request.assert_not_called()
@@ -676,7 +676,7 @@ async def test_add_comment_reaction_queues_on_rate_limit(
     with mock_httpx.patch():
         async with db_session_maker() as db:
             result = await add_comment_reaction(
-                git_repo="flathub/test-app", comment_id=98765, db=db
+                git_repo="openpak/test-app", comment_id=98765, db=db
             )
             await db.commit()
 
@@ -703,7 +703,7 @@ async def test_set_pr_labels(mock_settings, mock_httpx, replace, expected_method
     mock_httpx.set_response("request")
     with mock_httpx.patch():
         result = await set_pr_labels(
-            git_repo="flathub/test-app",
+            git_repo="openpak/test-app",
             pr_number=42,
             labels=["runtime-update"],
             replace=replace,
@@ -716,14 +716,14 @@ async def test_set_pr_labels(mock_settings, mock_httpx, replace, expected_method
     assert label_create_call[0][0] == "POST"
     assert (
         label_create_call[0][1]
-        == "https://api.github.com/repos/flathub/test-app/labels"
+        == "https://api.github.com/repos/openpak/test-app/labels"
     )
     assert label_create_call[1]["json"] == {"name": "runtime-update"}
 
     assert label_apply_call[0][0] == expected_method
     assert (
         label_apply_call[0][1]
-        == "https://api.github.com/repos/flathub/test-app/issues/42/labels"
+        == "https://api.github.com/repos/openpak/test-app/issues/42/labels"
     )
     assert label_apply_call[1]["json"] == {"labels": ["runtime-update"]}
     assert label_apply_call[1]["headers"]["Authorization"] == "token test-token"
@@ -741,7 +741,7 @@ async def test_set_pr_labels_multiple_labels(mock_settings, mock_httpx, labels):
     mock_httpx.set_response("request")
     with mock_httpx.patch():
         result = await set_pr_labels(
-            git_repo="flathub/test-app",
+            git_repo="openpak/test-app",
             pr_number=42,
             labels=labels,
         )

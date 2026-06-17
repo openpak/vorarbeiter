@@ -206,7 +206,7 @@ def test_receive_github_webhook_reacts_to_bot_command(client: TestClient, mock_d
     headers = {"X-GitHub-Delivery": delivery_id}
 
     payload = {
-        "repository": {"full_name": "flathub/test-app"},
+        "repository": {"full_name": "openpak/test-app"},
         "sender": {"login": "test-user"},
         "action": "created",
         "comment": {
@@ -219,7 +219,7 @@ def test_receive_github_webhook_reacts_to_bot_command(client: TestClient, mock_d
             "user": {"login": "pr-author"},
             "body": "",
             "pull_request": {
-                "url": "https://api.github.com/repos/flathub/test-app/pulls/42"
+                "url": "https://api.github.com/repos/openpak/test-app/pulls/42"
             },
         },
     }
@@ -242,7 +242,7 @@ def test_receive_github_webhook_reacts_to_bot_command(client: TestClient, mock_d
     assert response.status_code == 202
     mock_reaction.assert_awaited_once()
     args, kwargs = mock_reaction.call_args
-    assert args[0] == "flathub/test-app"
+    assert args[0] == "openpak/test-app"
     assert args[1] == 123456789
 
 
@@ -1760,7 +1760,7 @@ SAMPLE_ISSUE_BODY_VALIDATION_FAILURE = """The build for `test-app` failed valida
 cc @openpak/build-moderation"""
 
 SAMPLE_RETRY_COMMENT_PAYLOAD = {
-    "repository": {"full_name": "flathub/test-app"},
+    "repository": {"full_name": "openpak/test-app"},
     "sender": {"login": "test-actor"},
     "action": "created",
     "comment": {"body": "bot, retry", "user": {"login": "test-user"}},
@@ -1777,11 +1777,11 @@ SAMPLE_RETRY_COMMENT_PAYLOAD = {
 async def test_parse_failure_issue_stable_build():
     from app.routes.webhooks import parse_failure_issue
 
-    result = await parse_failure_issue(SAMPLE_ISSUE_BODY_STABLE, "flathub/test-app")
+    result = await parse_failure_issue(SAMPLE_ISSUE_BODY_STABLE, "openpak/test-app")
 
     assert result is not None
     assert result["sha"] == "abc123456789"
-    assert result["repo"] == "flathub/test-app"
+    assert result["repo"] == "openpak/test-app"
     assert result["ref"] == "refs/heads/master"
     assert result["flat_manager_repo"] == "stable"
     assert result["issue_type"] == "build_failure"
@@ -1792,12 +1792,12 @@ async def test_parse_failure_issue_job_failure():
     from app.routes.webhooks import parse_failure_issue
 
     result = await parse_failure_issue(
-        SAMPLE_ISSUE_BODY_JOB_FAILURE, "flathub/test-app"
+        SAMPLE_ISSUE_BODY_JOB_FAILURE, "openpak/test-app"
     )
 
     assert result is not None
     assert result["sha"] == "abc123456789"
-    assert result["repo"] == "flathub/test-app"
+    assert result["repo"] == "openpak/test-app"
     assert result["ref"] == "refs/heads/master"
     assert result["flat_manager_repo"] == "stable"
     assert result["issue_type"] == "job_failure"
@@ -1813,12 +1813,12 @@ async def test_parse_failure_issue_validation_failure():
         AsyncMock(return_value="Build from refs/heads/master"),
     ):
         result = await parse_failure_issue(
-            SAMPLE_ISSUE_BODY_VALIDATION_FAILURE, "flathub/test-app"
+            SAMPLE_ISSUE_BODY_VALIDATION_FAILURE, "openpak/test-app"
         )
 
     assert result is not None
     assert result["sha"] == "abc123456789"
-    assert result["repo"] == "flathub/test-app"
+    assert result["repo"] == "openpak/test-app"
     assert result["ref"] == "refs/heads/master"
     assert result["flat_manager_repo"] == "stable"
     assert result["issue_type"] == "validation_failure"
@@ -1829,7 +1829,7 @@ async def test_parse_failure_issue_invalid():
     from app.routes.webhooks import parse_failure_issue
 
     invalid_body = "This is not a build failure issue."
-    result = await parse_failure_issue(invalid_body, "flathub/test-app")
+    result = await parse_failure_issue(invalid_body, "openpak/test-app")
 
     assert result is None
 
@@ -1858,7 +1858,7 @@ async def test_validate_retry_permissions_collaborator(mock_httpx):
 
     with mock_httpx.patch():
         with patch("app.routes.webhooks.settings.flathubbot_token", "test-token"):
-            result = await validate_retry_permissions("flathub/test-app", "test-user")
+            result = await validate_retry_permissions("openpak/test-app", "test-user")
 
             assert result is True
 
@@ -1877,7 +1877,7 @@ async def test_validate_retry_permissions_org_member(mock_httpx):
 
     with mock_httpx.patch():
         with patch("app.routes.webhooks.settings.flathubbot_token", "test-token"):
-            result = await validate_retry_permissions("flathub/test-app", "test-user")
+            result = await validate_retry_permissions("openpak/test-app", "test-user")
 
             assert result is True
 
@@ -1896,7 +1896,7 @@ async def test_validate_retry_permissions_denied(mock_httpx):
 
     with mock_httpx.patch():
         with patch("app.routes.webhooks.settings.flathubbot_token", "test-token"):
-            result = await validate_retry_permissions("flathub/test-app", "test-user")
+            result = await validate_retry_permissions("openpak/test-app", "test-user")
 
             assert result is False
 
@@ -1935,7 +1935,7 @@ async def test_handle_issue_retry_success():
         patch("app.routes.webhooks.close_github_issue", AsyncMock()),
     ):
         result = await handle_issue_retry(
-            git_repo="flathub/test-app",
+            git_repo="openpak/test-app",
             issue_number=123,
             issue_body=SAMPLE_ISSUE_BODY_STABLE,
             comment_author="test-user",
@@ -1964,7 +1964,7 @@ async def test_handle_issue_retry_permission_denied():
             "app.routes.webhooks.add_issue_comment", AsyncMock()
         ) as mock_comment:
             result = await handle_issue_retry(
-                git_repo="flathub/test-app",
+                git_repo="openpak/test-app",
                 issue_number=123,
                 issue_body=SAMPLE_ISSUE_BODY_STABLE,
                 comment_author="unauthorized-user",
@@ -1995,7 +1995,7 @@ async def test_handle_issue_retry_invalid_issue():
             "app.routes.webhooks.add_issue_comment", AsyncMock()
         ) as mock_comment:
             result = await handle_issue_retry(
-                git_repo="flathub/test-app",
+                git_repo="openpak/test-app",
                 issue_number=123,
                 issue_body=invalid_body,
                 comment_author="test-user",
@@ -2510,7 +2510,7 @@ async def test_create_pipeline_bot_cancel_active_pipelines():
         webhook_event_id=event_id,
         status=PipelineStatus.RUNNING,
         build_id=100,
-        provider_data={"owner": "flathub-infra", "repo": "vorarbeiter", "run_id": 999},
+        provider_data={"owner": "openpak", "repo": "vorarbeiter", "run_id": 999},
     )
     mock_pipeline_2 = Pipeline(
         id=pipeline_id_2,
@@ -2558,7 +2558,7 @@ async def test_create_pipeline_bot_cancel_active_pipelines():
         mock_fm.purge.assert_awaited_once_with(100)
         mock_gh_actions.cancel.assert_awaited_once_with(
             str(pipeline_id_1),
-            {"owner": "flathub-infra", "repo": "vorarbeiter", "run_id": 999},
+            {"owner": "openpak", "repo": "vorarbeiter", "run_id": 999},
         )
         mock_comment.assert_awaited_once_with(
             git_repo="test-owner/test-repo",
@@ -2589,7 +2589,7 @@ async def test_create_pipeline_bot_cancel_passes_snapshot_data_to_helper():
         webhook_event_id=event_id,
         status=PipelineStatus.RUNNING,
         build_id=100,
-        provider_data={"owner": "flathub-infra", "repo": "vorarbeiter", "run_id": 999},
+        provider_data={"owner": "openpak", "repo": "vorarbeiter", "run_id": 999},
     )
     mock_pipeline_2 = Pipeline(
         id=pipeline_id_2,
@@ -2633,7 +2633,7 @@ async def test_create_pipeline_bot_cancel_passes_snapshot_data_to_helper():
             call(
                 pipeline_id_1,
                 100,
-                {"owner": "flathub-infra", "repo": "vorarbeiter", "run_id": 999},
+                {"owner": "openpak", "repo": "vorarbeiter", "run_id": 999},
                 mock_get_flat_manager.return_value,
                 github_actions=MockGHActions.return_value,
             ),
@@ -2876,7 +2876,7 @@ async def test_create_pipeline_bot_build_stores_target_branch(
     "repo,files,expected",
     [
         (
-            "flathub/com.example.bar",
+            "openpak/com.example.bar",
             [
                 {
                     "filename": "com.example.bar.yml",
@@ -2893,7 +2893,7 @@ async def test_create_pipeline_bot_build_stores_target_branch(
             True,
         ),
         (
-            "flathub/com.example.bar",
+            "openpak/com.example.bar",
             [
                 {
                     "filename": "com.example.bar.json",
@@ -2911,7 +2911,7 @@ async def test_create_pipeline_bot_build_stores_target_branch(
             True,
         ),
         (
-            "flathub/com.example.bar",
+            "openpak/com.example.bar",
             [
                 {
                     "filename": "com.example.bar.yml",
@@ -2926,7 +2926,7 @@ async def test_create_pipeline_bot_build_stores_target_branch(
             False,
         ),
         (
-            "flathub/com.example.bar",
+            "openpak/com.example.bar",
             [
                 {
                     "filename": "foobarbaz.yml",
@@ -2959,7 +2959,7 @@ async def test_create_pipeline_labels_runtime_update_pr():
     pipeline_id = uuid.uuid4()
 
     payload = {
-        "repository": {"full_name": "flathub/com.example.bar"},
+        "repository": {"full_name": "openpak/com.example.bar"},
         "sender": {"login": "test-actor"},
         "action": "opened",
         "pull_request": {
@@ -2974,7 +2974,7 @@ async def test_create_pipeline_labels_runtime_update_pr():
         id=event_id,
         source=WebhookSource.GITHUB,
         payload=payload,
-        repository="flathub/com.example.bar",
+        repository="openpak/com.example.bar",
         actor="test-actor",
     )
 
@@ -3012,7 +3012,7 @@ async def test_create_pipeline_labels_runtime_update_pr():
 
     assert result == pipeline_id
     mock_set_labels.assert_awaited_once_with(
-        git_repo="flathub/com.example.bar",
+        git_repo="openpak/com.example.bar",
         pr_number=123,
         labels=["runtime"],
     )

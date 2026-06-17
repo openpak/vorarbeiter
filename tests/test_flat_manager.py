@@ -8,7 +8,7 @@ from app.utils.flat_manager import FlatManagerClient, JobStatus, JobKind
 @pytest.fixture
 def flat_manager_client(mock_httpx):
     client = FlatManagerClient(
-        url="https://test.flathub.org", token="test_token", timeout=30.0
+        url="https://test.openpak.org", token="test_token", timeout=30.0
     )
     client.client = mock_httpx._client
     return client
@@ -31,7 +31,7 @@ class TestCreateBuild:
 
         mock_httpx.request.assert_called_once_with(
             "POST",
-            "https://test.flathub.org/api/v1/build",
+            "https://test.openpak.org/api/v1/build",
             headers={"Authorization": "Bearer test_token"},
             timeout=30.0,
             json={
@@ -91,25 +91,25 @@ class TestGetBuildUrl:
     @pytest.mark.parametrize(
         ("input_value", "expected"),
         [
-            ("12345", "https://test.flathub.org/api/v1/build/12345"),
+            ("12345", "https://test.openpak.org/api/v1/build/12345"),
             (
-                "http://test.flathub.org/build/67890",
-                "https://test.flathub.org/api/v1/build/67890",
+                "http://test.openpak.org/build/67890",
+                "https://test.openpak.org/api/v1/build/67890",
             ),
             (
-                "https://test.flathub.org/build/67890",
-                "https://test.flathub.org/api/v1/build/67890",
+                "https://test.openpak.org/build/67890",
+                "https://test.openpak.org/api/v1/build/67890",
             ),
             (
-                "https://test.flathub.org/build/67890/",
-                "https://test.flathub.org/api/v1/build/67890",
+                "https://test.openpak.org/build/67890/",
+                "https://test.openpak.org/api/v1/build/67890",
             ),
             (
-                "https://test.flathub.org/api/v1/build/12345",
-                "https://test.flathub.org/api/v1/build/12345",
+                "https://test.openpak.org/api/v1/build/12345",
+                "https://test.openpak.org/api/v1/build/12345",
             ),
-            ("https://test.flathub.org", "https://test.flathub.org/api/v1/build/"),
-            (12345, "https://test.flathub.org/api/v1/build/12345"),
+            ("https://test.openpak.org", "https://test.openpak.org/api/v1/build/"),
+            (12345, "https://test.openpak.org/api/v1/build/12345"),
         ],
         ids=[
             "id",
@@ -132,7 +132,7 @@ class TestCommit:
         await flat_manager_client.commit("12345")
         mock_httpx.request.assert_called_once_with(
             "POST",
-            "https://test.flathub.org/api/v1/build/12345/commit",
+            "https://test.openpak.org/api/v1/build/12345/commit",
             headers={"Authorization": "Bearer test_token"},
             timeout=30.0,
             json={
@@ -151,7 +151,7 @@ class TestCommit:
         )
         mock_httpx.request.assert_called_once_with(
             "POST",
-            "https://test.flathub.org/api/v1/build/12345/commit",
+            "https://test.openpak.org/api/v1/build/12345/commit",
             headers={"Authorization": "Bearer test_token"},
             timeout=30.0,
             json={
@@ -179,7 +179,7 @@ class TestPublish:
         await flat_manager_client.publish("12345")
         mock_httpx.request.assert_called_once_with(
             "POST",
-            "https://test.flathub.org/api/v1/build/12345/publish",
+            "https://test.openpak.org/api/v1/build/12345/publish",
             headers={"Authorization": "Bearer test_token"},
             timeout=30.0,
             json={},
@@ -204,7 +204,7 @@ class TestPurge:
         await flat_manager_client.purge("12345")
         mock_httpx.request.assert_called_once_with(
             "POST",
-            "https://test.flathub.org/api/v1/build/12345/purge",
+            "https://test.openpak.org/api/v1/build/12345/purge",
             headers={"Authorization": "Bearer test_token"},
             timeout=30.0,
             json={},
@@ -237,7 +237,7 @@ class TestRepublish:
 
         mock_httpx.request.assert_called_once_with(
             "POST",
-            "https://test.flathub.org/api/v1/repo/stable/republish",
+            "https://test.openpak.org/api/v1/repo/stable/republish",
             headers={"Authorization": "Bearer test_token"},
             timeout=30.0,
             json={
@@ -273,7 +273,7 @@ class TestGetJob:
 
         mock_httpx.request.assert_called_once_with(
             "GET",
-            "https://test.flathub.org/api/v1/job/123",
+            "https://test.openpak.org/api/v1/job/123",
             headers={"Authorization": "Bearer test_token"},
             json={"log_offset": None},
             timeout=30.0,
@@ -309,7 +309,7 @@ class TestMiscellaneous:
 
         mock_httpx.request.assert_called_once_with(
             "POST",
-            "https://test.flathub.org/api/v1/token_subset",
+            "https://test.openpak.org/api/v1/token_subset",
             headers={"Authorization": "Bearer test_token"},
             timeout=30.0,
             json={
@@ -341,7 +341,7 @@ class TestMiscellaneous:
 
         mock_httpx.request.assert_called_once_with(
             "GET",
-            "https://test.flathub.org/api/v1/build/12345/extended",
+            "https://test.openpak.org/api/v1/build/12345/extended",
             headers={"Authorization": "Bearer test_token"},
             timeout=30.0,
         )

@@ -12,7 +12,7 @@ def make_pipeline(**overrides):
         "app_id": "org.test.App",
         "status": PipelineStatus.FAILED,
         "flat_manager_repo": "stable",
-        "params": {"repo": "flathub/org.test.App", "sha": "abc123def456"},
+        "params": {"repo": "openpak/org.test.App", "sha": "abc123def456"},
         "created_at": now - timedelta(minutes=10),
         "started_at": now - timedelta(minutes=5),
         "finished_at": now,

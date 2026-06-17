@@ -14,7 +14,7 @@ def github_actions_service():
 @pytest.fixture
 def sample_provider_data():
     return {
-        "owner": "flathub",
+        "owner": "openpak",
         "repo": "actions",
         "run_id": "12345",
         "workflow_id": "build.yml",
@@ -238,8 +238,8 @@ async def test_check_run_was_cancelled_via_api(
         )
 
         assert result is True
-        mock_get_details.assert_called_once_with("flathub", "actions", 12345)
-        mock_get_annotations.assert_called_once_with("flathub", "actions", 12345)
+        mock_get_details.assert_called_once_with("openpak", "actions", 12345)
+        mock_get_annotations.assert_called_once_with("openpak", "actions", 12345)
 
 
 @pytest.mark.asyncio
@@ -263,8 +263,8 @@ async def test_check_run_was_cancelled_via_logs(
         )
 
         assert result is True
-        mock_get_details.assert_called_once_with("flathub", "actions", 12345)
-        mock_get_annotations.assert_called_once_with("flathub", "actions", 12345)
+        mock_get_details.assert_called_once_with("openpak", "actions", 12345)
+        mock_get_annotations.assert_called_once_with("openpak", "actions", 12345)
 
 
 @pytest.mark.asyncio
@@ -295,7 +295,7 @@ async def test_check_run_was_cancelled_missing_fields(github_actions_service):
     """Test cancellation check with missing provider data fields."""
     # Missing run_id
     result = await github_actions_service.check_run_was_cancelled(
-        {"owner": "flathub", "repo": "actions"}
+        {"owner": "openpak", "repo": "actions"}
     )
     assert result is False
 
@@ -307,7 +307,7 @@ async def test_check_run_was_cancelled_missing_fields(github_actions_service):
 
     # Missing repo
     result = await github_actions_service.check_run_was_cancelled(
-        {"owner": "flathub", "run_id": "12345"}
+        {"owner": "openpak", "run_id": "12345"}
     )
     assert result is False
 
@@ -319,7 +319,7 @@ async def test_check_run_was_cancelled_missing_fields(github_actions_service):
 @pytest.mark.asyncio
 async def test_check_run_was_cancelled_invalid_run_id(github_actions_service):
     """Test cancellation check with invalid run_id format."""
-    provider_data = {"owner": "flathub", "repo": "actions", "run_id": "invalid"}
+    provider_data = {"owner": "openpak", "repo": "actions", "run_id": "invalid"}
 
     result = await github_actions_service.check_run_was_cancelled(provider_data)
 
@@ -370,7 +370,7 @@ async def test_check_run_was_cancelled_logs_fallback(
         )
 
         assert result is True
-        mock_get_annotations.assert_called_once_with("flathub", "actions", 12345)
+        mock_get_annotations.assert_called_once_with("openpak", "actions", 12345)
 
 
 @pytest.mark.asyncio
@@ -388,7 +388,7 @@ async def test_check_run_was_cancelled_retry_attempt_via_api(
         )
 
         assert result is False
-        mock_get_details.assert_called_once_with("flathub", "actions", 12345)
+        mock_get_details.assert_called_once_with("openpak", "actions", 12345)
 
 
 @pytest.mark.asyncio
@@ -406,7 +406,7 @@ async def test_check_run_was_cancelled_retry_attempt_via_logs(
         )
 
         assert result is False
-        mock_get_details.assert_called_once_with("flathub", "actions", 12345)
+        mock_get_details.assert_called_once_with("openpak", "actions", 12345)
 
 
 @pytest.mark.asyncio
@@ -434,8 +434,8 @@ async def test_check_run_was_cancelled_missing_run_attempt_defaults_to_1(
         )
 
         assert result is True
-        mock_get_details.assert_called_once_with("flathub", "actions", 12345)
-        mock_get_annotations.assert_called_once_with("flathub", "actions", 12345)
+        mock_get_details.assert_called_once_with("openpak", "actions", 12345)
+        mock_get_annotations.assert_called_once_with("openpak", "actions", 12345)
 
 
 @pytest.mark.asyncio
@@ -459,5 +459,5 @@ async def test_check_run_was_cancelled_retry_via_logs_only(
         )
 
         assert result is True
-        mock_get_details.assert_called_once_with("flathub", "actions", 12345)
-        mock_get_annotations.assert_called_once_with("flathub", "actions", 12345)
+        mock_get_details.assert_called_once_with("openpak", "actions", 12345)
+        mock_get_annotations.assert_called_once_with("openpak", "actions", 12345)

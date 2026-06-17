@@ -22,7 +22,7 @@ def mock_pipeline():
         status=PipelineStatus.SUCCEEDED,
         commit_job_id=12345,
         build_id=123,
-        params={"pr_number": "42", "repo": "flathub/org.test.App"},
+        params={"pr_number": "42", "repo": "openpak/org.test.App"},
     )
 
 
@@ -146,7 +146,7 @@ async def test_check_and_update_pipeline_jobs_cancels_timed_out_default_build(
         started_at=started_at,
         created_at=started_at,
         build_id=123,
-        provider_data={"owner": "flathub-infra", "repo": "vorarbeiter", "run_id": 1},
+        provider_data={"owner": "openpak", "repo": "vorarbeiter", "run_id": 1},
         params={"build_type": "default"},
     )
 
@@ -173,7 +173,7 @@ async def test_check_and_update_pipeline_jobs_keeps_default_build_inside_margin(
         started_at=started_at,
         created_at=started_at,
         build_id=123,
-        provider_data={"owner": "flathub-infra", "repo": "vorarbeiter", "run_id": 1},
+        provider_data={"owner": "openpak", "repo": "vorarbeiter", "run_id": 1},
         params={"build_type": "default"},
     )
 
@@ -200,7 +200,7 @@ async def test_check_and_update_pipeline_jobs_cancels_timed_out_extended_build(
         started_at=started_at,
         created_at=started_at,
         build_id=123,
-        provider_data={"owner": "flathub-infra", "repo": "vorarbeiter", "run_id": 1},
+        provider_data={"owner": "openpak", "repo": "vorarbeiter", "run_id": 1},
         params={"build_type": "medium"},
     )
 
@@ -227,7 +227,7 @@ async def test_check_and_update_pipeline_jobs_keeps_extended_build_inside_timeou
         started_at=started_at,
         created_at=started_at,
         build_id=123,
-        provider_data={"owner": "flathub-infra", "repo": "vorarbeiter", "run_id": 1},
+        provider_data={"owner": "openpak", "repo": "vorarbeiter", "run_id": 1},
         params={"build_type": "large"},
     )
 
@@ -255,7 +255,7 @@ async def test_check_and_update_pipeline_jobs_uses_github_job_start_time(
         started_at=pipeline_started_at,
         created_at=pipeline_started_at,
         build_id=123,
-        provider_data={"owner": "flathub-infra", "repo": "vorarbeiter", "run_id": 1},
+        provider_data={"owner": "openpak", "repo": "vorarbeiter", "run_id": 1},
         params={"build_type": "default"},
     )
 
@@ -332,7 +332,7 @@ async def test_check_and_update_pipeline_jobs_cancels_without_active_github_job(
         started_at=started_at,
         created_at=started_at,
         build_id=123,
-        provider_data={"owner": "flathub-infra", "repo": "vorarbeiter", "run_id": 1},
+        provider_data={"owner": "openpak", "repo": "vorarbeiter", "run_id": 1},
         params={"build_type": "default"},
     )
 
@@ -359,7 +359,7 @@ async def test_check_and_update_pipeline_jobs_keeps_running_when_github_jobs_una
         started_at=started_at,
         created_at=started_at,
         build_id=123,
-        provider_data={"owner": "flathub-infra", "repo": "vorarbeiter", "run_id": 1},
+        provider_data={"owner": "openpak", "repo": "vorarbeiter", "run_id": 1},
         params={"build_type": "default"},
     )
 
@@ -385,7 +385,7 @@ async def test_check_jobs_cancels_timed_out_running_builds(
         status=PipelineStatus.RUNNING,
         started_at=now - timedelta(hours=6, minutes=16),
         created_at=now - timedelta(hours=6, minutes=16),
-        provider_data={"owner": "flathub-infra", "repo": "vorarbeiter", "run_id": 1},
+        provider_data={"owner": "openpak", "repo": "vorarbeiter", "run_id": 1},
         params={"build_type": "default"},
     )
     extended_active = Pipeline(
@@ -394,7 +394,7 @@ async def test_check_jobs_cancels_timed_out_running_builds(
         status=PipelineStatus.RUNNING,
         started_at=now - timedelta(hours=9, minutes=14),
         created_at=now - timedelta(hours=9, minutes=14),
-        provider_data={"owner": "flathub-infra", "repo": "vorarbeiter", "run_id": 2},
+        provider_data={"owner": "openpak", "repo": "vorarbeiter", "run_id": 2},
         params={"build_type": "medium"},
     )
     extended_expired = Pipeline(
@@ -403,7 +403,7 @@ async def test_check_jobs_cancels_timed_out_running_builds(
         status=PipelineStatus.RUNNING,
         started_at=now - timedelta(hours=9, minutes=16),
         created_at=now - timedelta(hours=9, minutes=16),
-        provider_data={"owner": "flathub-infra", "repo": "vorarbeiter", "run_id": 3},
+        provider_data={"owner": "openpak", "repo": "vorarbeiter", "run_id": 3},
         params={"build_type": "large"},
     )
     reprocheck_expired = Pipeline(

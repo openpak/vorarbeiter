@@ -11,7 +11,7 @@ def mock_test_pipeline():
     pipeline = MagicMock(spec=Pipeline)
     pipeline.id = uuid.uuid4()
     pipeline.app_id = "org.example.App"
-    pipeline.params = {"sha": "abc123def456", "repo": "flathub/org.example.App"}
+    pipeline.params = {"sha": "abc123def456", "repo": "openpak/org.example.App"}
     pipeline.commit_job_id = 12345
     pipeline.publish_job_id = 12346
     pipeline.update_repo_job_id = 12347
@@ -74,7 +74,7 @@ async def test_build_pipeline_skips_notification_for_test_builds():
     mock_pipeline = MagicMock(spec=Pipeline)
     mock_pipeline.id = pipeline_id
     mock_pipeline.app_id = "org.example.App"
-    mock_pipeline.params = {"sha": "abc123", "repo": "flathub/org.example.App"}
+    mock_pipeline.params = {"sha": "abc123", "repo": "openpak/org.example.App"}
     mock_pipeline.build_id = 99999
     mock_pipeline.commit_job_id = None
     mock_pipeline.end_of_life = None
@@ -120,7 +120,7 @@ async def test_publishing_service_skips_notification_for_non_stable_beta():
     mock_pipeline = MagicMock(spec=Pipeline)
     mock_pipeline.id = uuid.uuid4()
     mock_pipeline.app_id = "org.example.App"
-    mock_pipeline.params = {"sha": "abc123", "repo": "flathub/org.example.App"}
+    mock_pipeline.params = {"sha": "abc123", "repo": "openpak/org.example.App"}
     mock_pipeline.build_id = 99999
     mock_pipeline.flat_manager_repo = "test"  # Would not normally get here
 

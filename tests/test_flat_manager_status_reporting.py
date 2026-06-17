@@ -12,7 +12,7 @@ def mock_pipeline():
     pipeline = MagicMock(spec=Pipeline)
     pipeline.id = uuid.uuid4()
     pipeline.app_id = "org.example.App"
-    pipeline.params = {"sha": "abc123def456", "repo": "flathub/org.example.App"}
+    pipeline.params = {"sha": "abc123def456", "repo": "openpak/org.example.App"}
     pipeline.commit_job_id = 12345
     pipeline.publish_job_id = 12346
     pipeline.update_repo_job_id = 12347
@@ -25,7 +25,7 @@ def mock_pipeline():
 async def test_notify_flat_manager_job_status():
     github_notifier = GitHubNotifier()
     mock_pipeline = MagicMock(spec=Pipeline)
-    mock_pipeline.params = {"sha": "abc123", "repo": "flathub/org.example.App"}
+    mock_pipeline.params = {"sha": "abc123", "repo": "openpak/org.example.App"}
 
     with patch("app.services.github_notifier.update_commit_status") as mock_update:
         await github_notifier.notify_flat_manager_job_status(
@@ -35,7 +35,7 @@ async def test_notify_flat_manager_job_status():
         mock_update.assert_called_once_with(
             sha="abc123",
             state="pending",
-            git_repo="flathub/org.example.App",
+            git_repo="openpak/org.example.App",
             description="Committing build...",
             target_url="https://hub.openpak.org/status/12345",
             context="flat-manager/commit",
@@ -152,7 +152,7 @@ async def test_build_pipeline_sets_initial_commit_status():
     mock_pipeline = MagicMock(spec=Pipeline)
     mock_pipeline.id = pipeline_id
     mock_pipeline.app_id = "org.example.App"
-    mock_pipeline.params = {"sha": "abc123", "repo": "flathub/org.example.App"}
+    mock_pipeline.params = {"sha": "abc123", "repo": "openpak/org.example.App"}
     mock_pipeline.build_id = 99999
     mock_pipeline.commit_job_id = None
     mock_pipeline.end_of_life = None
@@ -247,7 +247,7 @@ async def test_job_monitor_skips_notification_for_non_new_jobs(mock_pipeline):
 async def test_notify_flat_manager_job_new():
     job_monitor = JobMonitor()
     mock_pipeline = MagicMock(spec=Pipeline)
-    mock_pipeline.params = {"sha": "abc123", "repo": "flathub/org.example.App"}
+    mock_pipeline.params = {"sha": "abc123", "repo": "openpak/org.example.App"}
     mock_pipeline.flat_manager_repo = "stable"
 
     with patch("app.services.github_notifier.GitHubNotifier") as mock_notifier_class:

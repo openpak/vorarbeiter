@@ -23,7 +23,7 @@ def mock_pipeline():
         status=PipelineStatus.RUNNING,
         params={
             "sha": "abc123def456",
-            "repo": "flathub/org.test.App",
+            "repo": "openpak/org.test.App",
             "pr_number": "42",
         },
         triggered_by=PipelineTrigger.WEBHOOK,
@@ -57,7 +57,7 @@ async def test_notify_build_status_success(github_notifier, mock_pipeline):
         mock_update.assert_called_once_with(
             sha="abc123def456",
             state="success",
-            git_repo="flathub/org.test.App",
+            git_repo="openpak/org.test.App",
             description="Build succeeded",
             target_url="https://example.com/custom-log",
         )
@@ -77,7 +77,7 @@ async def test_notify_build_status_success_no_commit_job_id(
         mock_update.assert_called_once_with(
             sha="abc123def456",
             state="success",
-            git_repo="flathub/org.test.App",
+            git_repo="openpak/org.test.App",
             description="Build succeeded",
             target_url="https://example.com/custom-log",
         )
@@ -91,7 +91,7 @@ async def test_notify_build_status_failure(github_notifier, mock_pipeline):
         mock_update.assert_called_once_with(
             sha="abc123def456",
             state="failure",
-            git_repo="flathub/org.test.App",
+            git_repo="openpak/org.test.App",
             description="Build failed",
             target_url="https://example.com/logs/123",
         )
@@ -105,7 +105,7 @@ async def test_notify_build_status_cancelled(github_notifier, mock_pipeline):
         mock_update.assert_called_once_with(
             sha="abc123def456",
             state="failure",
-            git_repo="flathub/org.test.App",
+            git_repo="openpak/org.test.App",
             description="Build cancelled",
             target_url="https://example.com/logs/123",
         )
@@ -121,7 +121,7 @@ async def test_notify_build_status_committed(github_notifier, mock_pipeline):
         mock_update.assert_called_once_with(
             sha="abc123def456",
             state="success",
-            git_repo="flathub/org.test.App",
+            git_repo="openpak/org.test.App",
             description="Build ready",
             target_url="https://example.com/custom-log",
         )
@@ -135,7 +135,7 @@ async def test_notify_build_status_committing(github_notifier, mock_pipeline):
         mock_update.assert_called_once_with(
             sha="abc123def456",
             state="pending",
-            git_repo="flathub/org.test.App",
+            git_repo="openpak/org.test.App",
             description="Committing build...",
             target_url="https://example.com/logs/123",
         )
@@ -149,7 +149,7 @@ async def test_notify_build_status_unknown(github_notifier, mock_pipeline):
         mock_update.assert_called_once_with(
             sha="abc123def456",
             state="failure",
-            git_repo="flathub/org.test.App",
+            git_repo="openpak/org.test.App",
             description="Build status: unknown_status.",
             target_url="https://example.com/logs/123",
         )
@@ -189,7 +189,7 @@ async def test_notify_build_started(github_notifier, mock_pipeline):
         mock_update.assert_called_once_with(
             sha="abc123def456",
             state="pending",
-            git_repo="flathub/org.test.App",
+            git_repo="openpak/org.test.App",
             description="Build in progress",
             target_url=log_url,
         )
@@ -213,7 +213,7 @@ async def test_notify_pr_build_started(github_notifier, mock_pipeline):
         await github_notifier.notify_pr_build_started(mock_pipeline, log_url)
 
         mock_comment.assert_called_once_with(
-            git_repo="flathub/org.test.App",
+            git_repo="openpak/org.test.App",
             pr_number=42,
             comment=f"🚧 Started [test build]({log_url}).",
         )
@@ -293,7 +293,7 @@ async def test_notify_pr_build_complete_failure(
         expected_comment += "</details>"
 
         mock_comment.assert_called_once_with(
-            git_repo="flathub/org.test.App",
+            git_repo="openpak/org.test.App",
             pr_number=42,
             comment=expected_comment,
         )
@@ -337,7 +337,7 @@ async def test_notify_pr_build_complete_committed_with_download(
             "- A fake warning found in linter manifest check"
         )
         mock_comment.assert_called_once_with(
-            git_repo="flathub/org.test.App", pr_number=42, comment=expected_comment
+            git_repo="openpak/org.test.App", pr_number=42, comment=expected_comment
         )
 
 
@@ -357,7 +357,7 @@ async def test_notify_pr_build_complete_committed_no_build_id(
         await github_notifier.notify_pr_build_complete(mock_pipeline, "committed")
 
         mock_comment.assert_called_once_with(
-            git_repo="flathub/org.test.App",
+            git_repo="openpak/org.test.App",
             pr_number=42,
             comment="✅ [Test build succeeded](https://example.com/logs/123).\n\n*Built for x86_64 architecture.*",
         )
@@ -375,7 +375,7 @@ async def test_notify_pr_build_complete_cancelled(github_notifier, mock_pipeline
         await github_notifier.notify_pr_build_complete(mock_pipeline, "cancelled")
 
         mock_comment.assert_called_once_with(
-            git_repo="flathub/org.test.App",
+            git_repo="openpak/org.test.App",
             pr_number=42,
             comment=(
                 "❌ [Test build](https://example.com/logs/123) was cancelled.\n\n"
@@ -401,7 +401,7 @@ async def test_notify_pr_build_complete_commit_failure(github_notifier, mock_pip
         await github_notifier.notify_pr_build_complete(mock_pipeline, "commit_failure")
 
         mock_comment.assert_called_once_with(
-            git_repo="flathub/org.test.App",
+            git_repo="openpak/org.test.App",
             pr_number=42,
             comment=(
                 "❌ The [commit job](https://hub.openpak.org/status/12345) failed. "
@@ -429,7 +429,7 @@ async def test_notify_pr_build_complete_missing_params(github_notifier, mock_pip
 async def test_create_stable_build_failure_issue(github_notifier, mock_pipeline):
     with patch("app.services.github_notifier.create_github_issue") as mock_issue:
         mock_issue.return_value = (
-            "https://github.com/flathub/org.test.App/issues/1",
+            "https://github.com/openpak/org.test.App/issues/1",
             1,
         )
         await github_notifier.create_stable_build_failure_issue(mock_pipeline)
@@ -445,7 +445,7 @@ async def test_create_stable_build_failure_issue(github_notifier, mock_pipeline)
         )
 
         mock_issue.assert_called_once_with(
-            git_repo="flathub/org.test.App",
+            git_repo="openpak/org.test.App",
             title="Stable build failed",
             body=expected_body,
         )
@@ -471,7 +471,7 @@ async def test_create_stable_build_failure_issue_no_log_url(
 
     with patch("app.services.github_notifier.create_github_issue") as mock_issue:
         mock_issue.return_value = (
-            "https://github.com/flathub/org.test.App/issues/1",
+            "https://github.com/openpak/org.test.App/issues/1",
             1,
         )
         await github_notifier.create_stable_build_failure_issue(mock_pipeline)
@@ -523,7 +523,7 @@ async def test_handle_build_completion_failure_stable(github_notifier, mock_pipe
 
 @pytest.mark.asyncio
 async def test_handle_build_completion_no_pr(github_notifier, mock_pipeline):
-    mock_pipeline.params = {"sha": "abc123", "repo": "flathub/test"}
+    mock_pipeline.params = {"sha": "abc123", "repo": "openpak/test"}
 
     with patch.object(github_notifier, "notify_build_status") as mock_status:
         with patch.object(github_notifier, "notify_pr_build_complete") as mock_pr:
@@ -594,7 +594,7 @@ async def test_handle_build_started(github_notifier, mock_pipeline):
 
 @pytest.mark.asyncio
 async def test_handle_build_started_no_pr(github_notifier, mock_pipeline):
-    mock_pipeline.params = {"sha": "abc123", "repo": "flathub/test"}
+    mock_pipeline.params = {"sha": "abc123", "repo": "openpak/test"}
     log_url = "https://example.com/new-log"
 
     with patch.object(github_notifier, "notify_build_started") as mock_started:
@@ -616,7 +616,7 @@ async def test_create_stable_job_failure_issue_commit(github_notifier, mock_pipe
 
     with patch("app.services.github_notifier.create_github_issue") as mock_issue:
         mock_issue.return_value = (
-            "https://github.com/flathub/org.test.App/issues/1",
+            "https://github.com/openpak/org.test.App/issues/1",
             1,
         )
         await github_notifier.create_stable_job_failure_issue(
@@ -644,7 +644,7 @@ async def test_create_stable_job_failure_issue_commit(github_notifier, mock_pipe
         )
 
         mock_issue.assert_called_once_with(
-            git_repo="flathub/org.test.App",
+            git_repo="openpak/org.test.App",
             title=expected_title,
             body=expected_body,
         )
@@ -661,7 +661,7 @@ async def test_create_stable_job_failure_issue_publish(github_notifier, mock_pip
 
     with patch("app.services.github_notifier.create_github_issue") as mock_issue:
         mock_issue.return_value = (
-            "https://github.com/flathub/org.test.App/issues/1",
+            "https://github.com/openpak/org.test.App/issues/1",
             1,
         )
         await github_notifier.create_stable_job_failure_issue(
@@ -688,7 +688,7 @@ async def test_create_stable_job_failure_issue_publish(github_notifier, mock_pip
         )
 
         mock_issue.assert_called_once_with(
-            git_repo="flathub/org.test.App",
+            git_repo="openpak/org.test.App",
             title=expected_title,
             body=expected_body,
         )
@@ -707,7 +707,7 @@ async def test_create_stable_job_failure_issue_update_repo(
 
     with patch("app.services.github_notifier.create_github_issue") as mock_issue:
         mock_issue.return_value = (
-            "https://github.com/flathub/org.test.App/issues/1",
+            "https://github.com/openpak/org.test.App/issues/1",
             1,
         )
         await github_notifier.create_stable_job_failure_issue(
@@ -734,7 +734,7 @@ async def test_create_stable_job_failure_issue_update_repo(
         )
 
         mock_issue.assert_called_once_with(
-            git_repo="flathub/org.test.App",
+            git_repo="openpak/org.test.App",
             title=expected_title,
             body=expected_body,
         )
@@ -749,7 +749,7 @@ async def test_create_stable_job_failure_issue_beta_repo(
 
     with patch("app.services.github_notifier.create_github_issue") as mock_issue:
         mock_issue.return_value = (
-            "https://github.com/flathub/org.test.App/issues/1",
+            "https://github.com/openpak/org.test.App/issues/1",
             1,
         )
         await github_notifier.create_stable_job_failure_issue(
@@ -783,7 +783,7 @@ async def test_create_stable_job_failure_issue_long_log(github_notifier, mock_pi
 
     with patch("app.services.github_notifier.create_github_issue") as mock_issue:
         mock_issue.return_value = (
-            "https://github.com/flathub/org.test.App/issues/1",
+            "https://github.com/openpak/org.test.App/issues/1",
             1,
         )
         await github_notifier.create_stable_job_failure_issue(
@@ -804,7 +804,7 @@ async def test_create_stable_job_failure_issue_no_log(github_notifier, mock_pipe
 
     with patch("app.services.github_notifier.create_github_issue") as mock_issue:
         mock_issue.return_value = (
-            "https://github.com/flathub/org.test.App/issues/1",
+            "https://github.com/openpak/org.test.App/issues/1",
             1,
         )
         await github_notifier.create_stable_job_failure_issue(
@@ -822,7 +822,7 @@ async def test_create_stable_job_failure_issue_no_job_response(
 ):
     with patch("app.services.github_notifier.create_github_issue") as mock_issue:
         mock_issue.return_value = (
-            "https://github.com/flathub/org.test.App/issues/1",
+            "https://github.com/openpak/org.test.App/issues/1",
             1,
         )
         await github_notifier.create_stable_job_failure_issue(
@@ -869,7 +869,7 @@ async def test_create_validation_failure_issue_stable(
 ):
     with patch("app.services.github_notifier.create_github_issue") as mock_issue:
         mock_issue.return_value = (
-            "https://github.com/flathub/org.test.App/issues/1",
+            "https://github.com/openpak/org.test.App/issues/1",
             1,
         )
 
@@ -897,7 +897,7 @@ async def test_create_validation_failure_issue_stable(
         )
 
         mock_issue.assert_called_once_with(
-            git_repo="flathub/org.test.App",
+            git_repo="openpak/org.test.App",
             title="Stable publish validation failed for org.test.App",
             body=expected_body,
         )
@@ -951,7 +951,7 @@ async def test_create_validation_failure_issue_missing_reason(
 ):
     with patch("app.services.github_notifier.create_github_issue") as mock_issue:
         mock_issue.return_value = (
-            "https://github.com/flathub/org.test.App/issues/3",
+            "https://github.com/openpak/org.test.App/issues/3",
             3,
         )
 

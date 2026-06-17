@@ -300,7 +300,7 @@ async def test_reprocheck_callback_stores_full_json_output(
             "status": "success",
             "status_code": "42",
             "timestamp": "2025-01-15T10:30:45.123456+00:00",
-            "result_url": "https://github.com/flathub-infra/vorarbeiter/actions/runs/12345",
+            "result_url": "https://github.com/openpak/vorarbeiter/actions/runs/12345",
             "message": "Unreproducible",
         }
 
@@ -315,7 +315,7 @@ async def test_reprocheck_callback_stores_full_json_output(
         assert result["timestamp"] == "2025-01-15T10:30:45.123456+00:00"
         assert (
             result["result_url"]
-            == "https://github.com/flathub-infra/vorarbeiter/actions/runs/12345"
+            == "https://github.com/openpak/vorarbeiter/actions/runs/12345"
         )
         assert result["message"] == "Unreproducible"
 
