@@ -474,7 +474,7 @@ class BuildPipeline:
                 "app_id": pipeline.app_id,
                 "job_type": "build",
                 "params": {
-                    "owner": "OpenPak",
+                    "owner": "openpak",
                     "repo": "vorarbeiter",
                     "workflow_id": workflow_id,
                     "ref": "main",
@@ -991,7 +991,7 @@ class BuildPipeline:
         try:
             reprocheck_params = {
                 "build_pipeline_id": str(pipeline.id),
-                "owner": "OpenPak",
+                "owner": "openpak",
                 "repo": "vorarbeiter",
                 "workflow_id": "reprocheck.yml",
                 "ref": "main",

@@ -78,7 +78,7 @@ jobs:
           echo "APP_ID=${{ inputs.app_id }}" >> $GITHUB_ENV
           echo "BRANCH=${{ inputs.flat_manager_repo }}" >> $GITHUB_ENV
           # sync this env var name with linter
-          echo "REPO=https://github.com/OpenPak/${{ inputs.app_id }}" >> $GITHUB_ENV
+          echo "REPO=https://github.com/openpak/${{ inputs.app_id }}" >> $GITHUB_ENV
           echo "REF=${{ inputs.git_ref }}" >> $GITHUB_ENV
           echo "PR_TARGET_BRANCH=${{ inputs.pr_target_branch }}" >> $GITHUB_ENV
 
@@ -102,7 +102,7 @@ jobs:
           import sys
 
           http = urllib3.PoolManager()
-          base_url = "https://raw.githubusercontent.com/OpenPak/vorarbeiter/refs/heads/main/"
+          base_url = "https://raw.githubusercontent.com/openpak/vorarbeiter/refs/heads/main/"
           files_to_download = {
               f"{base_url}justfile": os.path.join(os.environ["GITHUB_WORKSPACE"], "work/.openpak.justfile"),
               f"{base_url}flatpak.seccomp.json": os.path.join(os.environ["GITHUB_WORKSPACE"], "flatpak.seccomp.json")
@@ -266,7 +266,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          repository: OpenPak/${{ inputs.app_id }}
+          repository: openpak/${{ inputs.app_id }}
           fetch-depth: 1
           path: repo
           ref: ${{ inputs.git_ref }}
@@ -343,7 +343,7 @@ jobs:
           echo "APP_ID=${{ inputs.app_id }}" >> $GITHUB_ENV
           echo "BRANCH=${{ inputs.flat_manager_repo }}" >> $GITHUB_ENV
           # sync this env var name with linter
-          echo "REPO=https://github.com/OpenPak/${{ inputs.app_id }}" >> $GITHUB_ENV
+          echo "REPO=https://github.com/openpak/${{ inputs.app_id }}" >> $GITHUB_ENV
           echo "REF=${{ inputs.git_ref }}" >> $GITHUB_ENV
           echo "PR_TARGET_BRANCH=${{ inputs.pr_target_branch }}" >> $GITHUB_ENV
           echo "BUILD_URL=${{ inputs.build_url }}" >> $GITHUB_ENV
@@ -402,7 +402,7 @@ jobs:
           import sys
 
           http = urllib3.PoolManager()
-          base_url = "https://raw.githubusercontent.com/OpenPak/vorarbeiter/refs/heads/main/"
+          base_url = "https://raw.githubusercontent.com/openpak/vorarbeiter/refs/heads/main/"
           files_to_download = {
               f"{base_url}justfile": os.path.join(os.environ["GITHUB_WORKSPACE"], "work/.openpak.justfile"),
               f"{base_url}flatpak.seccomp.json": os.path.join(os.environ["GITHUB_WORKSPACE"], "flatpak.seccomp.json")
@@ -509,7 +509,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           app_id_lc=${APP_ID,,}
-          IMAGE="ghcr.io/OpenPak/vorarbeiter/cache/flatpak-builder/${app_id_lc}/stable-${{ matrix.arch }}:latest"
+          IMAGE="ghcr.io/openpak/vorarbeiter/cache/flatpak-builder/${app_id_lc}/stable-${{ matrix.arch }}:latest"
           GH_PACKAGE="vorarbeiter/cache/flatpak-builder/${app_id_lc}/stable-${{ matrix.arch }}"
 
           SIZE_MAX=$((6 * 1024 * 1024 * 1024))
@@ -544,7 +544,7 @@ jobs:
             gh api --method DELETE \
               -H "Accept: application/vnd.github+json" \
               -H "X-GitHub-Api-Version: 2022-11-28" \
-              /orgs/OpenPak/packages/container/"$GH_PACKAGE_ENC" > /dev/null 2>&1 || exit 0
+              /orgs/openpak/packages/container/"$GH_PACKAGE_ENC" > /dev/null 2>&1 || exit 0
           fi
 
       - name: Fetch build cache
@@ -552,7 +552,7 @@ jobs:
         run: |
           app_id_lc=${APP_ID,,}
           cd "${GITHUB_WORKSPACE}/work"
-          oras pull ghcr.io/OpenPak/vorarbeiter/cache/flatpak-builder/${app_id_lc}/stable-${{ matrix.arch }}:latest || exit 0
+          oras pull ghcr.io/openpak/vorarbeiter/cache/flatpak-builder/${app_id_lc}/stable-${{ matrix.arch }}:latest || exit 0
 
       - name: Download sources
         run: |
@@ -649,7 +649,7 @@ jobs:
 
           app_id_lc=${APP_ID,,}
           oras login ghcr.io --password "${{ secrets.GITHUB_TOKEN }}" -u "${{ github.actor }}" || exit 0
-          oras push ghcr.io/OpenPak/vorarbeiter/cache/flatpak-builder/${app_id_lc}/stable-${{ matrix.arch }}:latest .flatpak-builder || exit 0
+          oras push ghcr.io/openpak/vorarbeiter/cache/flatpak-builder/${app_id_lc}/stable-${{ matrix.arch }}:latest .flatpak-builder || exit 0
 
       - name: List files in build directory
         if: always()

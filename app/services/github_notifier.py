@@ -173,7 +173,7 @@ class GitHubNotifier:
                 "- <code>bot, build</code> - Restart the test build\n"
             )
 
-            if git_repo != "OpenPak/openpak" and settings.ff_admin_ping_comment:
+            if git_repo != "openpak/openpak" and settings.ff_admin_ping_comment:
                 footnote += "- <code>bot, ping admins</code> - Contact Openpak admins\n"
 
             footnote += "</details>"

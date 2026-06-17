@@ -37,14 +37,14 @@ webhooks_router = APIRouter(prefix="/api/webhooks", tags=["webhooks"])
 STABLE_BUILD_FAILURE_PATTERN = re.compile(
     r"The stable build pipeline for `.+?` failed\.\s*\n"
     r"Commit SHA: ([0-9a-fA-F]+)\s*\n"
-    r"Build log: (https://github\.com/OpenPak/vorarbeiter/actions/runs/\d+)"
+    r"Build log: (https://github\.com/openpak/vorarbeiter/actions/runs/\d+)"
 )
 VALIDATION_FAILURE_PATTERN = re.compile(
     r"The build for `.+?` failed validation during publication in the (\w+) repository\.\s*\n\n"
     r"\*\*Build Information:\*\*\s*\n"
     r"- Commit SHA: ([0-9a-fA-F]+)\s*\n"
     r"(?:- Build ID: \d+\s*\n)?"
-    r"- Build log: (https://github\.com/OpenPak/vorarbeiter/actions/runs/\d+)",
+    r"- Build log: (https://github\.com/openpak/vorarbeiter/actions/runs/\d+)",
     re.DOTALL,
 )
 JOB_FAILURE_PATTERN = re.compile(
@@ -325,7 +325,7 @@ def should_store_event(payload: dict) -> bool:
         comment_author = payload.get("comment", {}).get("user", {}).get("login")
 
         if comment_author in ("github-actions[bot]",) and repo_full_name not in (
-            "OpenPak/openpak",
+            "openpak/openpak",
         ):
             return False
 
@@ -812,9 +812,9 @@ async def receive_github_webhook(
         )
 
     ignored_repos = [
-        "OpenPak/openpak",
-        "OpenPak/org.freedesktop.Platform.GL.nvidia",
-        "OpenPak/shared-modules",
+        "openpak/openpak",
+        "openpak/org.freedesktop.Platform.GL.nvidia",
+        "openpak/shared-modules",
     ]
     is_pr_event = "pull_request" in payload and payload.get("action") in [
         "opened",
@@ -824,7 +824,7 @@ async def receive_github_webhook(
     is_push_event = "commits" in payload and payload.get("ref", "")
 
     if (
-        repo_name == "OpenPak/openpak"
+        repo_name == "openpak/openpak"
         and payload.get("action") == "created"
         and payload.get("issue", {}).get("pull_request")
         and "comment" in payload
@@ -1000,7 +1000,7 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
         pr_url = issue.get("pull_request", {}).get("url", "")
         repo = event.repository
 
-        if "bot, ping admins" in comment_body and repo not in ("OpenPak/openpak",):
+        if "bot, ping admins" in comment_body and repo not in ("openpak/openpak",):
             if issue_number is None:
                 logger.error(
                     "Missing issue number for admin ping",
@@ -1269,7 +1269,7 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
             comment = (
                 "🚧 Test build queued — waiting for capacity."
                 if should_queue_test_build
-                else "🚧 Test build [enqueued](https://github.com/OpenPak/vorarbeiter/actions/workflows/build.yml)."
+                else "🚧 Test build [enqueued](https://github.com/openpak/vorarbeiter/actions/workflows/build.yml)."
             )
             await create_pr_comment(
                 git_repo=git_repo,

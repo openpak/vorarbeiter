@@ -703,7 +703,7 @@ async def is_issue_edited(git_repo: str, issue_number: int) -> bool | None:
 
 
 async def get_workflow_run_title(run_id: int) -> str | None:
-    repo = "OpenPak/vorarbeiter"
+    repo = "openpak/vorarbeiter"
     url = f"https://api.github.com/repos/{repo}/actions/runs/{run_id}"
     client = get_github_client()
     response = await client.request("get", url, context={"run_id": run_id})
@@ -720,7 +720,7 @@ async def get_workflow_run_title(run_id: int) -> str | None:
 
 
 async def get_build_job_arches(
-    run_id: int, owner: str = "OpenPak", repo: str = "vorarbeiter"
+    run_id: int, owner: str = "openpak", repo: str = "vorarbeiter"
 ) -> list[str]:
     url = f"https://api.github.com/repos/{owner}/{repo}/actions/runs/{run_id}/jobs"
     client = get_github_client()
@@ -785,7 +785,7 @@ async def get_check_run_annotations(
 
 
 async def get_linter_warning_messages(
-    run_id: int, owner: str = "OpenPak", repo: str = "vorarbeiter"
+    run_id: int, owner: str = "openpak", repo: str = "vorarbeiter"
 ) -> list[str]:
     def job_filter(job: dict[str, Any]) -> bool:
         return job.get("name", "").startswith(("validate-manifest", "build-"))

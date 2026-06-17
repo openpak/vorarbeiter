@@ -30,8 +30,8 @@ from app.utils.manifest import detect_appid_from_github
 
 logger = structlog.get_logger(__name__)
 
-FLATHUB_REPO = "OpenPak/openpak"
-MERGE_WORKFLOW_REPO = "OpenPak/vorarbeiter"
+FLATHUB_REPO = "openpak/openpak"
+MERGE_WORKFLOW_REPO = "openpak/vorarbeiter"
 MERGE_ERROR_REPO_CREATE_FAILED = "Failed to create repository"
 MERGE_ERROR_WORKFLOW_DISPATCH_FAILED = "Failed to dispatch merge workflow"
 MERGE_ERROR_GIT_PUSH_FAILED = "Git push workflow failed"
@@ -252,7 +252,7 @@ class MergeService:
             if not retry_repo_url:
                 await self._post_comment(
                     pr_number,
-                    f"❌ Repository `OpenPak/{appid}` already exists.",
+                    f"❌ Repository `openpak/{appid}` already exists.",
                 )
                 return
 
@@ -292,7 +292,7 @@ class MergeService:
                     MERGE_ERROR_REPO_CREATE_FAILED,
                 )
                 await self._post_comment(
-                    pr_number, f"❌ Failed to create repository `OpenPak/{appid}`."
+                    pr_number, f"❌ Failed to create repository `openpak/{appid}`."
                 )
                 return
 
@@ -444,7 +444,7 @@ class MergeService:
                 if not await self._clear_pr_metadata(pr_number, ctx.pr_metadata):
                     errors.append("Failed to clear PR assignees/reviewers")
 
-            repo_url = ctx.repo_html_url or f"https://github.com/OpenPak/{appid}"
+            repo_url = ctx.repo_html_url or f"https://github.com/openpak/{appid}"
             if not await self._close_and_lock_pr(pr_number, repo_url):
                 errors.append("Failed to close/lock PR")
 
@@ -498,7 +498,7 @@ class MergeService:
         for team in ("admins", "reviewers"):
             response = await client.request(
                 "get",
-                f"https://api.github.com/orgs/OpenPak/teams/{team}/memberships/{username}",
+                f"https://api.github.com/orgs/openpak/teams/{team}/memberships/{username}",
                 context={"team": team, "username": username},
                 raise_for_status=False,
             )
@@ -544,7 +544,7 @@ class MergeService:
         client = get_github_client()
         response = await client.request(
             "get",
-            f"https://api.github.com/repos/OpenPak/{appid}",
+            f"https://api.github.com/repos/openpak/{appid}",
             context={"appid": appid},
             raise_for_status=False,
         )
@@ -581,14 +581,14 @@ class MergeService:
         ):
             return None
 
-        return latest_request.repo_html_url or f"https://github.com/OpenPak/{appid}"
+        return latest_request.repo_html_url or f"https://github.com/openpak/{appid}"
 
     async def _create_repo(self, appid: str) -> str | None:
         client = get_github_client()
 
         response = await client.request(
             "post",
-            "https://api.github.com/orgs/OpenPak/repos",
+            "https://api.github.com/orgs/openpak/repos",
             content=json.dumps(
                 {
                     "name": appid,
@@ -703,7 +703,7 @@ class MergeService:
             logger.info("Adding user collaborator", appid=appid, user=user)
             response = await client.request(
                 "put",
-                f"https://api.github.com/repos/OpenPak/{appid}/collaborators/{user}",
+                f"https://api.github.com/repos/openpak/{appid}/collaborators/{user}",
                 content=json.dumps({"permission": "push"}),
                 context={"appid": appid, "user": user},
                 raise_for_status=False,
@@ -716,7 +716,7 @@ class MergeService:
             logger.info("Adding team collaborator", appid=appid, team=team)
             response = await client.request(
                 "put",
-                f"https://api.github.com/orgs/OpenPak/teams/{team}/repos/OpenPak/{appid}",
+                f"https://api.github.com/orgs/openpak/teams/{team}/repos/openpak/{appid}",
                 content=json.dumps({"permission": "push"}),
                 context={"appid": appid, "team": team},
                 raise_for_status=False,
@@ -731,7 +731,7 @@ class MergeService:
         client = get_github_client()
         response = await client.request(
             "delete",
-            f"https://api.github.com/repos/OpenPak/{appid}/collaborators/{username}",
+            f"https://api.github.com/repos/openpak/{appid}/collaborators/{username}",
             context={"appid": appid, "username": username},
             raise_for_status=False,
         )
@@ -743,7 +743,7 @@ class MergeService:
         client = get_github_client()
         response = await client.request(
             "get",
-            f"https://api.github.com/repos/OpenPak/{appid}/branches/{branch}",
+            f"https://api.github.com/repos/openpak/{appid}/branches/{branch}",
             context={"appid": appid, "branch": branch},
             raise_for_status=False,
         )

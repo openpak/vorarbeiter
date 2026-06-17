@@ -129,7 +129,7 @@ async def test_dispatch_reprocheck_workflow_creates_pipeline_and_dispatches(
             app_id=stable_pipeline.app_id,
             params={
                 "build_pipeline_id": str(stable_pipeline.id),
-                "owner": "OpenPak",
+                "owner": "openpak",
                 "repo": "vorarbeiter",
                 "workflow_id": "reprocheck.yml",
                 "ref": "main",

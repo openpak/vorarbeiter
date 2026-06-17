@@ -121,7 +121,7 @@ SAMPLE_GITHUB_ACTIONS_BOT_PAYLOAD = {
 }
 
 SAMPLE_GITHUB_ACTIONS_BOT_FLATHUB_PAYLOAD = {
-    "repository": {"full_name": "OpenPak/openpak"},
+    "repository": {"full_name": "openpak/openpak"},
     "sender": {"login": "github-actions[bot]"},
     "action": "created",
     "comment": {"body": "bot, build", "user": {"login": "github-actions[bot]"}},
@@ -150,14 +150,14 @@ SAMPLE_BOT_CANCEL_PAYLOAD = {
 }
 
 SAMPLE_FLATHUB_MERGE_PAYLOAD = {
-    "repository": {"full_name": "OpenPak/openpak"},
+    "repository": {"full_name": "openpak/openpak"},
     "sender": {"login": "test-reviewer"},
     "action": "created",
     "comment": {"body": "/merge head=" + ("a" * 40)},
     "issue": {
         "number": 42,
         "pull_request": {
-            "url": "https://api.github.com/repos/OpenPak/openpak/pulls/42"
+            "url": "https://api.github.com/repos/openpak/openpak/pulls/42"
         },
     },
 }
@@ -1730,7 +1730,7 @@ async def test_create_pipeline_disable_test_builds_bot_build(flag_enabled):
 SAMPLE_ISSUE_BODY_STABLE = """The stable build pipeline for `test-app` failed.
 
 Commit SHA: abc123456789
-Build log: https://github.com/OpenPak/vorarbeiter/actions/runs/123456789"""
+Build log: https://github.com/openpak/vorarbeiter/actions/runs/123456789"""
 
 SAMPLE_ISSUE_BODY_JOB_FAILURE = """The commit job for `test-app` failed in the stable repository.
 
@@ -1750,7 +1750,7 @@ SAMPLE_ISSUE_BODY_VALIDATION_FAILURE = """The build for `test-app` failed valida
 **Build Information:**
 - Commit SHA: abc123456789
 - Build ID: 456
-- Build log: https://github.com/OpenPak/vorarbeiter/actions/runs/123456789
+- Build log: https://github.com/openpak/vorarbeiter/actions/runs/123456789
 
 **Validation Failure:**
 ```
