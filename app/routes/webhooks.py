@@ -32,6 +32,10 @@ from app.utils.github import (
 
 logger = structlog.get_logger(__name__)
 
+# Hold strong references to fire-and-forget tasks so the event loop does not
+# garbage-collect them before they finish (per asyncio.create_task docs).
+_background_tasks: set[asyncio.Task] = set()
+
 webhooks_router = APIRouter(prefix="/api/webhooks", tags=["webhooks"])
 
 STABLE_BUILD_FAILURE_PATTERN = re.compile(
@@ -833,7 +837,11 @@ async def receive_github_webhook(
         if raw_comment.startswith("/merge"):
             from app.services import merge_service
 
-            asyncio.create_task(merge_service.handle_merge_command(payload))
+            task = asyncio.create_task(
+                merge_service.handle_merge_command(payload)
+            )
+            _background_tasks.add(task)
+            task.add_done_callback(_background_tasks.discard)
             return {"message": "Merge command received and processing."}
 
     if repo_name in ignored_repos and (is_pr_event or is_push_event):
