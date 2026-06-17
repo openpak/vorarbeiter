@@ -188,9 +188,7 @@ build app_id git_ref build_arch:
         extra_args="$extra_args --install-deps-from=flathub-beta"
     fi
 
-    if [ "{{build_arch}}" = "x86_64" ]; then
-        extra_args="$extra_args --bundle-sources"
-    fi
+    # --bundle-sources disabled (Openpak: avoids >100MB uploads through the Cloudflare tunnel)
 
     if [ "$ref_branch" != "test" ]; then
         extra_args="$extra_args --mirror-screenshots-url=https://dl.openpak.org/media --compose-url-policy=full"
