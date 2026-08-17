@@ -116,7 +116,7 @@ jobs:
             -e AWS_SECRET_ACCESS_KEY \
             -e AWS_S3_BUCKET_NAME \
             -w /reproworkdir \
-            ghcr.io/flathub-infra/flatpak-builder-lint:unprivileged \
+            ghcr.io/openpak/flatpak-builder-lint:unprivileged \
             flathub-repro-checker --json --upload-result --appid "${{ inputs.app_id }}" | tee reprocheck-output.json
 
       - name: Save reprocheck output
